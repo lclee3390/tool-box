@@ -16,6 +16,11 @@ function HomePage() {
             CP值計算機
           </Link>
         </li>
+        <li style={styles.li}>
+          <Link to="/zh" style={styles.a}>
+            簡繁轉換
+          </Link>
+        </li>
       </ul>
     </div>
   );

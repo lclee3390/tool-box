@@ -1,13 +1,14 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
 import CpValueCalculator from './components/CpValueCalculator';
+import ZhConvertTool from './components/ZhConvertTool';
 
 function App() {
   return (
-    <Router basename="/tool-box">
+    <Router>
       <header style={styles.header}>
         <Link to="/" style={styles.a}>
           回到首頁
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/coin-flip" element={<CoinFlip />} />
           <Route path="/cp" element={<CpValueCalculator />} />
+          <Route path="/zh" element={<ZhConvertTool />} />
         </Routes>
       </main>
     </Router>
