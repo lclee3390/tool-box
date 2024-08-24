@@ -433,7 +433,7 @@ const styles = {
     marginTop: "10px",
     fontSize: "1em",
     color: "#333",
-    textAlign: "right",
+    // textAlign: "right",
     fontWeight: "bold",
   },
   addButton: {
