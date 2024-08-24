@@ -210,8 +210,15 @@ function CpValueCalculator({ showPage }) {
         note: "",
         unitPrice: null,
       },
+      {
+        id: 2,
+        units: [{ value: "" }],
+        price: "",
+        note: "",
+        unitPrice: null,
+      },
     ]);
-    setNextId(2); // 重置ID計數器
+    setNextId(3); // 重置ID計數器
     setHighlightedItems([]); // 清除高亮顯示
     setErrors({}); // 清除錯誤訊息
   };
@@ -320,11 +327,6 @@ function CpValueCalculator({ showPage }) {
       <button style={styles.calcButton} onClick={calculateBestValue}>
         計算最佳 CP值
       </button>
-      <p>
-        <a style={styles.backLink} onClick={() => showPage("home")}>
-          回到首頁
-        </a>
-      </p>
     </div>
   );
 }

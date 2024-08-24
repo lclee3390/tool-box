@@ -1,19 +1,20 @@
 // src/components/HomePage.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-function HomePage({ showPage }) {
+function HomePage() {
   return (
     <div id="home-page">
       <ul style={styles.ul}>
         <li style={styles.li}>
-          <a style={styles.a} onClick={() => showPage('coin-flip')}>
+          <Link to="/coin-flip" style={styles.a}>
             擲硬幣
-          </a>
+          </Link>
         </li>
         <li style={styles.li}>
-          <a style={styles.a} onClick={() => showPage('cp-value-calculator')}>
+          <Link to="/cp" style={styles.a}>
             CP值計算機
-          </a>
+          </Link>
         </li>
       </ul>
     </div>

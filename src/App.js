@@ -1,29 +1,26 @@
 // src/App.js
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
 import CpValueCalculator from './components/CpValueCalculator';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-
-  const showPage = (pageId) => {
-    setCurrentPage(pageId);
-  };
-
   return (
-    <div>
+    <Router basename="/tool-box">
       <header style={styles.header}>
-        <h1>Tool Box</h1>
+        <Link to="/" style={styles.a}>
+          回到首頁
+        </Link>
       </header>
       <main style={styles.main}>
-        {currentPage === 'home' && <HomePage showPage={showPage} />}
-        {currentPage === 'coin-flip' && <CoinFlip showPage={showPage} />}
-        {currentPage === 'cp-value-calculator' && (
-          <CpValueCalculator showPage={showPage} />
-        )}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/coin-flip" element={<CoinFlip />} />
+          <Route path="/cp" element={<CpValueCalculator />} />
+        </Routes>
       </main>
-    </div>
+    </Router>
   );
 }
 
@@ -38,6 +35,12 @@ const styles = {
     padding: '20px',
     maxWidth: '800px',
     margin: '0 auto',
+  },
+  a: {
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    color: 'white',
   },
 };
 
