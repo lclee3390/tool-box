@@ -21,6 +21,11 @@ function HomePage() {
             簡繁轉換
           </Link>
         </li>
+        <li style={styles.li}>
+          <Link to="/bk-convert" style={styles.a}>
+            網址轉書籤工具
+          </Link>
+        </li>
       </ul>
     </div>
   );

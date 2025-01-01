@@ -5,6 +5,7 @@ import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
 import CpValueCalculator from './components/CpValueCalculator';
 import ZhConvertTool from './components/ZhConvertTool';
+import BookmarkConverter from './components/BookmarkConverter';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/coin-flip" element={<CoinFlip />} />
           <Route path="/cp" element={<CpValueCalculator />} />
           <Route path="/zh" element={<ZhConvertTool />} />
+          <Route path="/bk-convert" element={<BookmarkConverter />} />
         </Routes>
       </main>
     </Router>
