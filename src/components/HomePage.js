@@ -26,6 +26,11 @@ function HomePage() {
             網址轉書籤工具
           </Link>
         </li>
+        <li style={styles.li}>
+          <Link to="/clock" style={styles.a}>
+            時鐘工具
+          </Link>
+        </li>
       </ul>
     </div>
   );

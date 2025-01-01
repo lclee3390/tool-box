@@ -6,6 +6,7 @@ import CoinFlip from './components/CoinFlip';
 import CpValueCalculator from './components/CpValueCalculator';
 import ZhConvertTool from './components/ZhConvertTool';
 import BookmarkConverter from './components/BookmarkConverter';
+import Clock from './components/Clock';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/cp" element={<CpValueCalculator />} />
           <Route path="/zh" element={<ZhConvertTool />} />
           <Route path="/bk-convert" element={<BookmarkConverter />} />
+          <Route path="/clock" element={<Clock />} />
         </Routes>
       </main>
     </Router>
