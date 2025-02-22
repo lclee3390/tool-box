@@ -31,6 +31,13 @@ function HomePage() {
             時鐘工具
           </Link>
         </li>
+        
+        <li style={styles.li}>
+          <Link to="/yt-rss" style={styles.a}>
+            yt rss
+          </Link>
+        </li>
+        
       </ul>
     </div>
   );
