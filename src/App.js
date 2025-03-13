@@ -8,6 +8,7 @@ import ZhConvertTool from './components/ZhConvertTool';
 import BookmarkConverter from './components/BookmarkConverter';
 import Clock from './components/Clock';
 import YouTubeRSS from './components/YouTubeRSS';
+import UniqueURLProcessor from './components/UniqueUrlInput';
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/bk-convert" element={<BookmarkConverter />} />
           <Route path="/clock" element={<Clock />} />
           <Route path="/yt-rss" element={<YouTubeRSS />} />
+          <Route path="/unique-url" element={<UniqueURLProcessor />} />
+          
         </Routes>
       </main>
     </Router>

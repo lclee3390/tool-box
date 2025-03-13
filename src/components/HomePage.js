@@ -37,6 +37,14 @@ function HomePage() {
             yt rss
           </Link>
         </li>
+
+        <li style={styles.li}>
+          <Link to="/unique-url" style={styles.a}>
+            去除重複URL
+          </Link>
+        </li>
+
+        
         
       </ul>
     </div>
