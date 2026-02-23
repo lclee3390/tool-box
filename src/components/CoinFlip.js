@@ -6,10 +6,12 @@ function CoinFlip({ showPage }) {
   const [count, setCount] = useState({ heads: 0, tails: 0 });
 
   const flipCoin = () => {
-    const result = Math.random() < 0.5 ? '正面' : '反面';
+    const randomBytes = new Uint32Array(1);
+    window.crypto.getRandomValues(randomBytes);
+    const result = (randomBytes[0] & 1) === 0 ? '正面' : '反面';
     const timestamp = new Date().toLocaleString();
     setCoinResult({ result, timestamp });
-    setHistory([{ result, timestamp }, ...history]);
+    setHistory(prevHistory => [{ result, timestamp }, ...prevHistory]);
     if (result === '正面') {
       setCount(prevCount => ({ ...prevCount, heads: prevCount.heads + 1 }));
     } else {
