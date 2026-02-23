@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import NoSleep from 'nosleep.js';
+import { theme, ui } from '../styles/theme';
 
 const SYNC_SAMPLES = 5; // 採樣次數
 const AUTO_SYNC_INTERVAL = 30 * 60 * 1000; // 30分鐘自動同步一次
@@ -364,7 +365,6 @@ const Clock = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>時鐘</h2>
       <div style={styles.clockContainer}>
         <div style={styles.timeSection}>
           <div style={styles.timeLabel}>設備時間</div>
@@ -398,19 +398,12 @@ const Clock = () => {
 
 const styles = {
   container: {
-    padding: "20px",
+    ...ui.toolContainer,
     maxWidth: "800px",
-    margin: "0 auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
   },
   title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#2c3e50",
+    ...ui.toolTitle,
     marginBottom: "20px",
-    textAlign: "center",
   },
   clockContainer: {
     display: "flex",
@@ -440,8 +433,9 @@ const styles = {
     gap: '15px',
     marginTop: '20px',
     padding: '15px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '8px',
+    backgroundColor: theme.colors.surfaceMuted,
+    borderRadius: theme.radius.md,
+    border: `1px solid ${theme.colors.border}`,
   },
   wakeLockStatus: {
     fontSize: '16px',
@@ -450,12 +444,10 @@ const styles = {
     textAlign: 'center',
   },
   button: {
+    ...ui.buttonBase,
     padding: "10px 20px",
-    backgroundColor: "#4CAF50",
-    color: "white",
-    border: "none",
+    ...ui.buttonSuccess,
     borderRadius: "6px",
-    cursor: "pointer",
     fontSize: "14px",
     fontWeight: "500",
     transition: "background-color 0.2s ease",
@@ -521,8 +513,9 @@ const styles = {
   debugContainer: {
     marginTop: '20px',
     padding: '10px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '4px',
+    backgroundColor: theme.colors.surfaceMuted,
+    borderRadius: theme.radius.sm,
+    border: `1px solid ${theme.colors.border}`,
     width: '100%',
     maxWidth: '500px',
   },

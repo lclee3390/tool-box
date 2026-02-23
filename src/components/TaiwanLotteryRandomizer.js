@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { theme, ui } from '../styles/theme';
 
 const GAME_CONFIGS = {
   powerLottery: {
@@ -213,7 +214,6 @@ function TaiwanLotteryRandomizer() {
 
   return (
     <div id="taiwan-lottery-randomizer" style={styles.container}>
-      <h2 style={styles.title}>台灣彩券隨機選號</h2>
       <div style={styles.note}>依玩法範圍隨機產生號碼，僅供娛樂與參考。</div>
 
       <div style={styles.controlCard}>
@@ -302,17 +302,11 @@ function TaiwanLotteryRandomizer() {
 
 const styles = {
   container: {
-    padding: '20px',
-    maxWidth: '100%',
-    margin: '0 auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+    ...ui.toolContainer,
   },
   title: {
+    ...ui.toolTitle,
     margin: '0 0 10px 0',
-    textAlign: 'center',
-    color: '#333',
   },
   note: {
     textAlign: 'center',
@@ -321,9 +315,9 @@ const styles = {
     fontSize: '0.95em',
   },
   controlCard: {
-    backgroundColor: '#fff',
-    border: '1px solid #e9e9e9',
-    borderRadius: '8px',
+    backgroundColor: theme.colors.surfaceMuted,
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
     padding: '16px',
     marginBottom: '16px',
   },
@@ -369,36 +363,30 @@ const styles = {
     flexWrap: 'wrap',
   },
   primaryButton: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
+    ...ui.buttonBase,
+    ...ui.buttonSuccess,
     padding: '10px 14px',
-    border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
     fontSize: '1em',
   },
   secondaryButton: {
-    backgroundColor: '#2196F3',
-    color: 'white',
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
     padding: '10px 14px',
-    border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
     fontSize: '1em',
   },
   exportButton: {
-    backgroundColor: '#607D8B',
-    color: 'white',
+    ...ui.buttonBase,
+    ...ui.buttonSecondary,
     padding: '10px 14px',
-    border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
     fontSize: '1em',
   },
   resultsCard: {
     backgroundColor: '#fff',
-    border: '1px solid #e9e9e9',
-    borderRadius: '8px',
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
     padding: '16px',
   },
   resultsHeader: {

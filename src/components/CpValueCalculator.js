@@ -1,5 +1,6 @@
 // src/components/CpValueCalculator.js
 import React, { useState, useEffect, useRef } from "react";
+import { theme, ui } from "../styles/theme";
 
 const CP_VALUE_CALCULATOR_DRAFT_KEY = "cp-value-calculator-draft-v1";
 
@@ -325,9 +326,12 @@ function CpValueCalculator({ showPage }) {
   return (
     <div id="cp-value-calculator" style={styles.container}>
       <div style={styles.header}>
-
-        {/* <h2 style={styles.title}>計算機</h2> */}
-
+        <div style={styles.headerSummary}>
+          <div style={styles.headerSummaryTitle}>商品清單</div>
+          <div style={styles.headerSummaryText}>
+            共 {items.length} 項，輸入價格與單位後即可比較每單位成本
+          </div>
+        </div>
         <div style={styles.headerActions}>
           <input
             ref={importFileInputRef}
@@ -345,314 +349,390 @@ function CpValueCalculator({ showPage }) {
           <button style={styles.exportButton} onClick={exportToJSON}>
             匯出
           </button>
+          <button style={styles.clearButton} onClick={clearAllItems}>
+            清除
+          </button>
         </div>
-        <button style={styles.clearButton} onClick={clearAllItems}>
-          清除
-        </button>
       </div>
-      {items.map((item, index) => (
-        <div
-          key={item.id}
-          style={{
-            ...styles.item,
-            borderColor: highlightedItems.includes(item.id)
-              ? "#4CAF50"
-              : "#ccc",
-            backgroundColor: highlightedItems.includes(item.id)
-              ? "#eaffea"
-              : "#fff",
-          }}
-        >
-          <div style={styles.fieldsName}>
-            <span style={styles.itemLabel}>No.{index + 1}</span>
-            <input
-              type="text"
-              placeholder="備註"
-              value={item.note}
-              onChange={(e) =>
-                handleInputChange(item.id, "note", e.target.value)
-              }
-              style={styles.noteInput}
-            />
-            <button
-              style={styles.deleteButton}
-              onClick={() => deleteItem(item.id)}
+      <div style={styles.itemsList}>
+        {items.map((item, index) => {
+          const isBest = highlightedItems.includes(item.id);
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                ...styles.item,
+                ...(isBest ? styles.itemBest : null),
+              }}
             >
-              刪除
-            </button>
-          </div>
-          <div style={styles.fields}>
-            <div style={styles.inputGroup}>
-              <span style={styles.inputLabel}>價格</span>
-              {errors[item.id]?.price && (
-                <div style={styles.error}>{errors[item.id].price}</div>
-              )}
-              <input
-                type="number"
-                placeholder="價格"
-                value={item.price}
-                onChange={(e) =>
-                  handleInputChange(item.id, "price", e.target.value)
-                }
-                style={styles.input}
-              />
-            </div>
-            <div style={styles.unitTitle}>
-              <span style={styles.inputLabel}>單位</span>
-              <button style={styles.addUnitButton} onClick={() => addUnit(item.id)}>
-                + 添加單位
-              </button>
-            </div>
-            {item.units.map((unit, unitIndex) => (
-              <div style={styles.inputUnitGroup} key={unitIndex}>
-                {/* <span style={styles.inputLabel}>單位{unitIndex + 1}</span> */}
-                <input
-                  type="number"
-                  placeholder={`單位${unitIndex + 1}`}
-                  value={unit.value}
-                  onChange={(e) =>
-                    handleUnitChange(item.id, unitIndex, e.target.value)
-                  }
-                  style={styles.input}
-                />
-                {unitIndex > 0 && (
-                  <button
-                    style={styles.deleteButton}
-                    onClick={() => removeUnit(item.id, unitIndex)}
-                  >
-                    X
-                  </button>
-                )}
+              <div style={styles.itemTopRow}>
+                <div style={styles.itemMeta}>
+                  <span style={styles.itemLabel}>商品 {index + 1}</span>
+                  {isBest && <span style={styles.bestBadge}>最佳 CP</span>}
+                </div>
+                <button
+                  style={styles.deleteItemButton}
+                  onClick={() => deleteItem(item.id)}
+                >
+                  刪除
+                </button>
               </div>
-            ))}
-            
-          </div>
-          {item.unitPrice !== null && (
-            <div style={styles.calculation}>
-              單位價格: {item.unitPrice.toFixed(2)} 元/單位
+
+              <div style={styles.noteRow}>
+                <label style={styles.fieldLabel} htmlFor={`cp-note-${item.id}`}>
+                  備註
+                </label>
+                <input
+                  id={`cp-note-${item.id}`}
+                  type="text"
+                  placeholder="例如：大包裝 / 特價款"
+                  value={item.note}
+                  onChange={(e) =>
+                    handleInputChange(item.id, "note", e.target.value)
+                  }
+                  style={styles.noteInput}
+                />
+              </div>
+
+              <div style={styles.editorGrid}>
+                <div style={styles.panel}>
+                  <div style={styles.panelHeader}>
+                    <span style={styles.panelTitle}>價格</span>
+                  </div>
+                  <input
+                    type="number"
+                    placeholder="輸入價格"
+                    value={item.price}
+                    onChange={(e) =>
+                      handleInputChange(item.id, "price", e.target.value)
+                    }
+                    style={styles.input}
+                  />
+                  {errors[item.id]?.price && (
+                    <div style={styles.error}>{errors[item.id].price}</div>
+                  )}
+                </div>
+
+                <div style={styles.panel}>
+                  <div style={styles.panelHeader}>
+                    <span style={styles.panelTitle}>單位（相乘）</span>
+                    <button
+                      style={styles.addUnitButton}
+                      onClick={() => addUnit(item.id)}
+                    >
+                      + 添加單位
+                    </button>
+                  </div>
+
+                  <div style={styles.unitList}>
+                    {item.units.map((unit, unitIndex) => (
+                      <div style={styles.unitRow} key={unitIndex}>
+                        <span style={styles.unitIndex}>#{unitIndex + 1}</span>
+                        <input
+                          type="number"
+                          placeholder={`單位 ${unitIndex + 1}`}
+                          value={unit.value}
+                          onChange={(e) =>
+                            handleUnitChange(item.id, unitIndex, e.target.value)
+                          }
+                          style={styles.input}
+                        />
+                        {unitIndex > 0 && (
+                          <button
+                            style={styles.removeUnitButton}
+                            onClick={() => removeUnit(item.id, unitIndex)}
+                          >
+                            移除
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  ...styles.calculation,
+                  ...(isBest ? styles.calculationBest : null),
+                }}
+              >
+                {item.unitPrice !== null
+                  ? `單位價格：${item.unitPrice.toFixed(2)} 元 / 單位`
+                  : "尚未計算單位價格"}
+              </div>
             </div>
-          )}
-        </div>
-      ))}
-      
-      <button style={styles.addButton} onClick={addItem}>
+          );
+        })}
+      </div>
+
+      <div style={styles.footerActions}>
+        <button style={styles.addButton} onClick={addItem}>
           + 添加商品項目
         </button>
-      <button style={styles.calcButton} onClick={calculateBestValue}>
-        計算最佳 CP值
-      </button>
+        <button style={styles.calcButton} onClick={calculateBestValue}>
+          計算最佳 CP值
+        </button>
+      </div>
     </div>
   );
 }
 
 const styles = {
   container: {
-    padding: "20px",
-    maxWidth: "100%",
-    margin: "0 auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+    ...ui.toolContainer,
+    display: "grid",
+    gap: "14px",
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "20px",
     flexWrap: "wrap",
+    gap: "10px",
+    padding: "12px",
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surfaceMuted,
+    border: `1px solid ${theme.colors.border}`,
+  },
+  headerSummary: {
+    minWidth: "220px",
+    flex: "1 1 280px",
+  },
+  headerSummaryTitle: {
+    fontWeight: "700",
+    color: theme.colors.text,
+    marginBottom: "2px",
+  },
+  headerSummaryText: {
+    color: theme.colors.textMuted,
+    fontSize: "0.9rem",
+    lineHeight: 1.35,
   },
   headerActions: {
     display: "flex",
     alignItems: "center",
-    gap: "5px",
+    gap: "8px",
     flexWrap: "wrap",
+    justifyContent: "flex-end",
   },
   hiddenFileInput: {
     display: "none",
   },
-  title: {
-    textAlign: "center",
-    margin: "10px 0",
-    color: "#333",
-    flexGrow: 1,
-  },
   item: {
-    marginBottom: "15px",
-    padding: "15px",
-    borderRadius: "8px",
-    border: "2px solid #ccc",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    padding: "14px",
+    borderRadius: theme.radius.md,
+    border: `1px solid ${theme.colors.borderStrong}`,
+    backgroundColor: theme.colors.surface,
+    boxShadow: theme.shadow.soft,
   },
-  fields: {
+  itemBest: {
+    borderColor: theme.colors.success,
+    backgroundColor: "#f1fff5",
+    boxShadow: "0 6px 16px rgba(22, 163, 74, 0.12)",
+  },
+  itemsList: {
+    display: "grid",
+    gap: "12px",
+  },
+  itemTopRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: "5px",
-    gap: "3px",
+    gap: "8px",
     flexWrap: "wrap",
   },
-  fieldsName: {
+  itemMeta: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: "5px",
-    gap: "3px",
-    flexWrap: "nowrap",
+    gap: "8px",
+    flexWrap: "wrap",
   },
   itemLabel: {
-    fontWeight: "bold",
-    color: "#4CAF50",
+    fontWeight: "700",
+    color: theme.colors.primary,
+    padding: "4px 8px",
+    borderRadius: theme.radius.pill,
+    backgroundColor: "rgba(37,99,235,0.08)",
+    border: "1px solid rgba(37,99,235,0.15)",
+    fontSize: "0.9rem",
+  },
+  bestBadge: {
+    fontWeight: "700",
+    color: "#166534",
+    backgroundColor: "#dcfce7",
+    border: "1px solid #86efac",
+    borderRadius: theme.radius.pill,
+    padding: "4px 8px",
+    fontSize: "0.8rem",
+  },
+  noteRow: {
+    display: "grid",
+    gridTemplateColumns: "72px minmax(0, 1fr)",
+    alignItems: "center",
+    gap: "8px",
+    marginTop: "10px",
+    marginBottom: "12px",
+  },
+  fieldLabel: {
+    color: theme.colors.textMuted,
+    fontSize: "0.9rem",
+    fontWeight: "600",
   },
   noteInput: {
-    flex: "1 1 auto",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    ...ui.input,
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: theme.radius.sm,
     boxSizing: "border-box",
     textAlign: "left",
   },
-  inputGroup: {
+  editorGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gap: "12px",
+    alignItems: "start",
+  },
+  panel: {
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surfaceMuted,
+    padding: "12px",
+    minWidth: 0,
+  },
+  panelHeader: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: "5px",
-    flex: "1 1 100%",
-    flexDirection: "row",
-    position: "relative",
+    gap: "8px",
+    marginBottom: "10px",
     flexWrap: "wrap",
   },
-  inputUnitGroup: {
-    display: "flex",
-    alignItems: "center",
-    gap: "5px",
-    flex: "1 1 100%",
-    flexDirection: "row",
-    // position: "relative",
-    flexWrap: "nowrap",
-  },
-  inputLabel: {
-    flexShrink: 0,
-    color: "#555",
+  panelTitle: {
+    fontWeight: "700",
+    color: theme.colors.text,
   },
   input: {
-    flex: "1 1 100%",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    ...ui.input,
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: theme.radius.sm,
     boxSizing: "border-box",
   },
-  error: {
-    color: "#ff0000",
-    fontSize: "0.8em",
+  unitList: {
+    display: "grid",
+    gap: "8px",
   },
-  deleteButton: {
-    backgroundColor: "#FF5722",
-    color: "white",
-    padding: "8px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
+  unitRow: {
+    display: "grid",
+    gridTemplateColumns: "46px minmax(0, 1fr) auto",
+    alignItems: "center",
+    gap: "8px",
+  },
+  unitIndex: {
+    display: "inline-flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "34px",
+    borderRadius: theme.radius.sm,
+    border: `1px solid ${theme.colors.borderStrong}`,
+    backgroundColor: "#fff",
+    color: theme.colors.textMuted,
+    fontWeight: "600",
+    fontSize: "0.85rem",
+  },
+  error: {
+    color: theme.colors.danger,
+    fontSize: "0.8rem",
+    marginTop: "6px",
+  },
+  deleteItemButton: {
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.9rem",
     flexShrink: 0,
-    marginLeft: "10px",
+  },
+  removeUnitButton: {
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
+    padding: "8px 10px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.85rem",
+    flexShrink: 0,
   },
   calculation: {
-    marginTop: "10px",
-    fontSize: "1em",
-    color: "#333",
-    // textAlign: "right",
-    fontWeight: "bold",
+    marginTop: "12px",
+    borderRadius: theme.radius.sm,
+    padding: "10px 12px",
+    fontSize: "0.95rem",
+    color: theme.colors.textMuted,
+    backgroundColor: "#f8fafc",
+    border: `1px solid ${theme.colors.border}`,
+    fontWeight: "600",
+  },
+  calculationBest: {
+    color: "#166534",
+    backgroundColor: "#ecfdf5",
+    border: "1px solid #86efac",
   },
   addButton: {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
+    ...ui.buttonBase,
+    ...ui.buttonSecondary,
+    padding: "10px 14px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.95rem",
     flexShrink: 0,
-    marginBottom: "10px",
-  },
-
-  unitTitle:{
-    marginTop:"5px",
-
   },
   addUnitButton: {
-    marginLeft:"5px",
-    backgroundColor: "#4CAF50",
-    color: "white",
-    // padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
+    ...ui.buttonBase,
+    ...ui.buttonSuccess,
+    padding: "8px 10px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.85rem",
     flexShrink: 0,
-    // marginBottom: "10px",
   },
   calcButton: {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
-    width: "100%",
-    marginBottom: "20px",
-  },
-  backLink: {
-    textDecoration: "none",
-    color: "#4CAF50",
-    fontWeight: "bold",
-    textAlign: "center",
-    display: "block",
-    marginTop: "20px",
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
+    padding: "10px 18px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.95rem",
+    flex: "1 1 220px",
+    minWidth: "200px",
   },
   clearButton: {
-    backgroundColor: "#F44336",
-    color: "white",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
+    padding: "10px 12px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.9rem",
     flexShrink: 0,
-    marginLeft: "auto",
   },
   exportButton: {
-    backgroundColor: "#2196F3",
-    color: "white",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
+    padding: "10px 12px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.9rem",
     flexShrink: 0,
-    marginRight: "5px",
   },
   importButton: {
-    backgroundColor: "#607D8B",
-    color: "white",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "1em",
+    ...ui.buttonBase,
+    ...ui.buttonSecondary,
+    padding: "10px 12px",
+    borderRadius: theme.radius.sm,
+    fontSize: "0.9rem",
     flexShrink: 0,
   },
-  "@media (max-width: 768px)": {
-    inputGroup: {
-      flexDirection: "column",
-    },
-    fields: {
-      flexDirection: "column",
-    },
-    input: {
-      width: "100%",
-    },
-    noteInput: {
-      width: "100%",
-    },
+  footerActions: {
+    display: "flex",
+    gap: "10px",
+    flexWrap: "wrap",
+    alignItems: "center",
+    paddingTop: "4px",
   },
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { theme, ui } from '../styles/theme';
 
 function CoinFlip({ showPage }) {
   const [coinResult, setCoinResult] = useState({ result: '請擲硬幣', timestamp: '' });
@@ -26,7 +27,6 @@ function CoinFlip({ showPage }) {
 
   return (
     <div id="coin-flip-page" style={styles.container}>
-      <h2 style={styles.title}>擲硬幣</h2>
       <div style={styles.actionBox}>
         <button
           style={styles.button}
@@ -73,27 +73,18 @@ function CoinFlip({ showPage }) {
 
 const styles = {
   container: {
-    padding: "20px",
-    maxWidth: "100%",
-    margin: "0 auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+    ...ui.toolContainer,
   },
   title: {
-    marginBottom: "20px",
-    textAlign: "center",
+    ...ui.toolTitle,
     margin: "10px 0",
-    color: "#333",
     flexGrow: 1,
   },
   button: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
+    ...ui.buttonBase,
+    ...ui.buttonSuccess,
     padding: '8px 12px',
-    border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
     fontSize: '1.1em',
     transition: 'background-color 0.3s',
   },
@@ -103,7 +94,7 @@ const styles = {
     alignItems: 'center',
   },
   buttonHover: {
-    backgroundColor: '#45a049',
+    backgroundColor: theme.colors.successHover,
   },
   coinResult: {
     marginTop: '20px',
@@ -143,7 +134,7 @@ const styles = {
     paddingLeft: '0',
     listStyleType: 'none',
     margin: '0',
-    border: '1px solid #eee',
+    border: `1px solid ${theme.colors.border}`,
     borderRadius: '5px',
   },
   historyItem: {
@@ -153,18 +144,16 @@ const styles = {
     borderBottom: '1px solid #eee',
   },
   clearButton: {
-    backgroundColor: '#f44336',
-    color: 'white',
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
     padding: '10px 20px',
-    border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer',
     fontSize: '1em',
     marginTop: '20px',
     transition: 'background-color 0.3s',
   },
   clearButtonHover: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: theme.colors.dangerHover,
   },
 };
 

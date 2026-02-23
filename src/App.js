@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
 import CpValueCalculator from './components/CpValueCalculator';
@@ -11,51 +11,125 @@ import YouTubeRSS from './components/YouTubeRSS';
 import UniqueURLProcessor from './components/UniqueUrlInput';
 import TaiwanLotteryRandomizer from './components/TaiwanLotteryRandomizer';
 import UnitConverter from './components/UnitConverter';
+import { theme, ui } from './styles/theme';
+
+const ROUTES = [
+  { path: '/', title: '工具箱', element: <HomePage /> },
+  { path: '/coin-flip', title: '擲硬幣', element: <CoinFlip /> },
+  { path: '/cp', title: 'CP值計算機', element: <CpValueCalculator /> },
+  { path: '/zh', title: '簡繁轉換', element: <ZhConvertTool /> },
+  { path: '/bk-convert', title: '網址轉書籤工具', element: <BookmarkConverter /> },
+  { path: '/clock', title: '時鐘工具', element: <Clock /> },
+  { path: '/lottery-randomizer', title: '台灣彩券隨機選號', element: <TaiwanLotteryRandomizer /> },
+  { path: '/unit-converter', title: '單位換算', element: <UnitConverter /> },
+  { path: '/yt-rss', title: 'YouTube RSS 產生器', element: <YouTubeRSS /> },
+  { path: '/unique-url', title: '去除重複 URL', element: <UniqueURLProcessor /> },
+];
+
+const ROUTE_TITLE_MAP = Object.fromEntries(ROUTES.map(({ path, title }) => [path, title]));
+
+function AppLayout() {
+  const location = useLocation();
+  const pageTitle = ROUTE_TITLE_MAP[location.pathname] || '工具箱';
+  const isHome = location.pathname === '/';
+
+  return (
+    <>
+      <header style={styles.header}>
+        <div style={styles.headerInner}>
+          <div style={styles.headerRow}>
+            <div style={styles.headerSide}>
+              {!isHome && (
+                <Link to="/" style={styles.homeLink}>
+                  回到首頁
+                </Link>
+              )}
+            </div>
+            <h1 style={styles.headerTitle}>{pageTitle}</h1>
+            <div style={styles.headerSide} aria-hidden="true">
+              {!isHome && (
+                <span style={{ ...styles.homeLink, ...styles.headerGhost }}>回到首頁</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main style={styles.main}>
+        <Routes>
+          {ROUTES.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+      </main>
+    </>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <header style={styles.header}>
-        <Link to="/" style={styles.a}>
-          回到首頁
-        </Link>
-      </header>
-      <main style={styles.main}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/coin-flip" element={<CoinFlip />} />
-          <Route path="/cp" element={<CpValueCalculator />} />
-          <Route path="/zh" element={<ZhConvertTool />} />
-          <Route path="/bk-convert" element={<BookmarkConverter />} />
-          <Route path="/clock" element={<Clock />} />
-          <Route path="/lottery-randomizer" element={<TaiwanLotteryRandomizer />} />
-          <Route path="/unit-converter" element={<UnitConverter />} />
-          <Route path="/yt-rss" element={<YouTubeRSS />} />
-          <Route path="/unique-url" element={<UniqueURLProcessor />} />
-          
-        </Routes>
-      </main>
+      <AppLayout />
     </Router>
   );
 }
 
 const styles = {
   header: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    textAlign: 'center',
-    padding: '10px 0',
+    ...ui.appHeader,
+    padding: '8px 0',
   },
-  main: {
-    padding: '20px',
-    maxWidth: '800px',
+  headerInner: {
+    width: '100%',
+    maxWidth: '980px',
     margin: '0 auto',
+    padding: '0 20px',
+    boxSizing: 'border-box',
   },
-  a: {
+  headerRow: {
+    minHeight: '36px',
+    display: 'grid',
+    gridTemplateColumns: 'max-content 1fr max-content',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  headerSide: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    margin: 0,
+    fontSize: 'clamp(18px, 2.2vw, 24px)',
+    fontWeight: 800,
+    letterSpacing: '0.02em',
+    lineHeight: 1.2,
+    textAlign: 'center',
+  },
+  headerGhost: {
+    visibility: 'hidden',
+    pointerEvents: 'none',
+  },
+  headerBadge: {
+    fontSize: '0.75rem',
+    color: 'rgba(255,255,255,0.9)',
+    padding: '3px 10px',
+    borderRadius: theme.radius.pill,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    border: '1px solid rgba(255,255,255,0.16)',
+    whiteSpace: 'nowrap',
+  },
+  main: ui.appMain,
+  homeLink: {
     textDecoration: 'none',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
     color: 'white',
+    padding: '6px 12px',
+    borderRadius: theme.radius.pill,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    fontSize: '0.9rem',
   },
 };
 

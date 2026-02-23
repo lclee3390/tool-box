@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { theme, ui } from '../styles/theme';
 
 const BookmarkConverter = () => {
   const [urls, setUrls] = useState('');
@@ -37,7 +38,6 @@ ${validUrls.map(url => `    <DT><A HREF="${url}">${url}</A>`).join('\n')}
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>網址轉換書籤工具</h2>
       <div style={styles.content}>
         <div style={styles.section}>
           <label style={styles.label}>
@@ -89,19 +89,12 @@ ${validUrls.map(url => `    <DT><A HREF="${url}">${url}</A>`).join('\n')}
 
 const styles = {
   container: {
-    padding: "20px",
+    ...ui.toolContainer,
     maxWidth: "800px",
-    margin: "0 auto",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
   },
   title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#2c3e50",
+    ...ui.toolTitle,
     marginBottom: "20px",
-    textAlign: "center",
   },
   content: {
     display: "flex",
@@ -142,12 +135,10 @@ const styles = {
     overflowWrap: "normal",
   },
   button: {
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
     padding: "10px 20px",
-    backgroundColor: "#4CAF50",
-    color: "white",
-    border: "none",
     borderRadius: "6px",
-    cursor: "pointer",
     fontSize: "14px",
     fontWeight: "500",
     transition: "background-color 0.2s ease",
@@ -162,13 +153,13 @@ const styles = {
     marginBottom: '10px',
   },
   clearButton: {
-    backgroundColor: "#e53e3e",
+    backgroundColor: theme.colors.danger,
     ':hover': {
       backgroundColor: "#c53030",
     },
   },
   copyButton: {
-    backgroundColor: "#4299e1",
+    backgroundColor: theme.colors.info,
     ':hover': {
       backgroundColor: "#3182ce",
     },

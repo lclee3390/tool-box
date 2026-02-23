@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { theme, ui } from '../styles/theme';
 
 const UNIT_CATEGORIES = {
   length: {
@@ -210,7 +211,6 @@ function UnitConverter() {
 
   return (
     <div id="unit-converter" style={styles.container}>
-      <h2 style={styles.title}>單位換算</h2>
       <div style={styles.subtitle}>支援長度、重量、體積、溫度、面積、時間、資料容量與網速</div>
 
       <div style={styles.card}>
@@ -297,17 +297,11 @@ function UnitConverter() {
 
 const styles = {
   container: {
-    padding: '20px',
-    maxWidth: '100%',
-    margin: '0 auto',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+    ...ui.toolContainer,
   },
   title: {
+    ...ui.toolTitle,
     margin: '0 0 8px 0',
-    textAlign: 'center',
-    color: '#333',
   },
   subtitle: {
     textAlign: 'center',
@@ -316,9 +310,9 @@ const styles = {
     fontSize: '0.95em',
   },
   card: {
-    backgroundColor: '#fff',
-    border: '1px solid #ececec',
-    borderRadius: '8px',
+    backgroundColor: theme.colors.surfaceMuted,
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
     padding: '16px',
   },
   formRow: {
@@ -399,21 +393,17 @@ const styles = {
     flexWrap: 'wrap',
   },
   swapButton: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
     borderRadius: '5px',
     padding: '10px 12px',
-    cursor: 'pointer',
     minWidth: '72px',
   },
   clearButton: {
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
     borderRadius: '5px',
     padding: '10px 12px',
-    cursor: 'pointer',
     minWidth: '72px',
   },
   summary: {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { theme, ui } from "../styles/theme";
 
 const YT_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
 const YT_HOSTS = new Set(["youtube.com", "www.youtube.com", "m.youtube.com"]);
@@ -101,7 +102,6 @@ const YouTubeRSS = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>YouTube RSS 產生器</h2>
       <p style={styles.desc}>
         支援輸入 <strong>Channel ID（UC...）</strong>、<strong>/channel/UC...</strong> 網址、
         或已存在的 RSS 連結。
@@ -164,17 +164,14 @@ const YouTubeRSS = () => {
 
 const styles = {
   container: {
-    backgroundColor: "#f3f4f6",
+    ...ui.toolContainer,
     padding: "24px",
     maxWidth: "640px",
     margin: "24px auto",
-    borderRadius: "12px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
   },
   title: {
-    color: "#222",
+    ...ui.toolTitle,
     marginBottom: "12px",
-    textAlign: "center",
   },
   desc: {
     marginBottom: "16px",
@@ -205,14 +202,12 @@ const styles = {
     lineHeight: 1.4,
   },
   primaryButton: {
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
     width: "100%",
     padding: "12px",
     borderRadius: "6px",
-    border: "none",
-    backgroundColor: "#3b82f6",
-    color: "#fff",
     fontWeight: "bold",
-    cursor: "pointer",
   },
   error: {
     color: "#dc2626",
@@ -223,8 +218,8 @@ const styles = {
   resultCard: {
     marginTop: "16px",
     backgroundColor: "#fff",
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
     padding: "12px",
   },
   resultTitle: {
@@ -263,18 +258,16 @@ const styles = {
     flexWrap: "wrap",
   },
   secondaryButton: {
-    backgroundColor: "#10b981",
-    color: "#fff",
-    border: "none",
+    ...ui.buttonBase,
+    ...ui.buttonSuccess,
     borderRadius: "6px",
     padding: "10px 12px",
-    cursor: "pointer",
     fontWeight: "bold",
   },
   ghostButton: {
     backgroundColor: "#fff",
-    color: "#374151",
-    border: "1px solid #d1d5db",
+    color: theme.colors.text,
+    border: `1px solid ${theme.colors.borderStrong}`,
     borderRadius: "6px",
     padding: "10px 12px",
     cursor: "pointer",

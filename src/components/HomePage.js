@@ -1,83 +1,85 @@
 // src/components/HomePage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { theme, ui } from '../styles/theme';
+
+const TOOL_ITEMS = [
+  { to: '/coin-flip', label: '擲硬幣' },
+  { to: '/cp', label: 'CP值計算機' },
+  { to: '/zh', label: '簡繁轉換' },
+  { to: '/bk-convert', label: '網址轉書籤工具' },
+  { to: '/clock', label: '時鐘工具' },
+  { to: '/lottery-randomizer', label: '台灣彩券隨機選號' },
+  { to: '/unit-converter', label: '單位換算' },
+  { to: '/yt-rss', label: 'YouTube RSS' },
+  { to: '/unique-url', label: '去除重複URL' },
+];
 
 function HomePage() {
   return (
-    <div id="home-page">
+    <div id="home-page" style={styles.container}>
+      <div style={styles.hero}>
+        <p style={styles.subtitle}>常用小工具集中在一頁，開啟即用。</p>
+      </div>
       <ul style={styles.ul}>
-        <li style={styles.li}>
-          <Link to="/coin-flip" style={styles.a}>
-            擲硬幣
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/cp" style={styles.a}>
-            CP值計算機
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/zh" style={styles.a}>
-            簡繁轉換
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/bk-convert" style={styles.a}>
-            網址轉書籤工具
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/clock" style={styles.a}>
-            時鐘工具
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/lottery-randomizer" style={styles.a}>
-            台灣彩券隨機選號
-          </Link>
-        </li>
-        <li style={styles.li}>
-          <Link to="/unit-converter" style={styles.a}>
-            單位換算
-          </Link>
-        </li>
-        
-        <li style={styles.li}>
-          <Link to="/yt-rss" style={styles.a}>
-            yt rss
-          </Link>
-        </li>
-
-        <li style={styles.li}>
-          <Link to="/unique-url" style={styles.a}>
-            去除重複URL
-          </Link>
-        </li>
-
-        
-        
+        {TOOL_ITEMS.map((item) => (
+          <li key={item.to} style={styles.li}>
+            <Link to={item.to} style={styles.a}>
+              <span>{item.label}</span>
+              <span style={styles.arrow}>→</span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
 
 const styles = {
+  container: {
+    ...ui.toolContainer,
+    padding: '20px',
+  },
+  hero: {
+    marginBottom: '12px',
+  },
+  title: {
+    ...ui.toolTitle,
+    marginBottom: '4px',
+  },
+  subtitle: {
+    margin: 0,
+    textAlign: 'center',
+    color: theme.colors.textMuted,
+    fontSize: '0.95em',
+  },
   ul: {
     listStyleType: 'none',
     padding: '0',
+    margin: '16px 0 0 0',
+    display: 'grid',
+    gap: '10px',
   },
   li: {
-    backgroundColor: 'white',
-    margin: '10px 0',
-    padding: '15px',
-    borderRadius: '5px',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    backgroundColor: theme.colors.surfaceMuted,
+    border: `1px solid ${theme.colors.border}`,
+    borderRadius: theme.radius.md,
+    boxShadow: theme.shadow.soft,
   },
   a: {
     textDecoration: 'none',
-    color: '#4CAF50',
-    fontWeight: 'bold',
+    color: theme.colors.text,
+    fontWeight: '700',
     cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '14px 16px',
+  },
+  arrow: {
+    color: theme.colors.primary,
+    fontWeight: '700',
   },
 };
 

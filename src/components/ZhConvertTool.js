@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import chineseConv from 'chinese-conv';
+import { theme, ui } from '../styles/theme';
 
 const ZhConvertTool = () => {
   const [inputText, setInputText] = useState('');
@@ -56,8 +57,6 @@ const ZhConvertTool = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>簡繁轉換工具</h2>
-      
       <div style={styles.inputSection}>
         <div style={styles.sectionHeader}>
           <button 
@@ -146,16 +145,11 @@ const ZhConvertTool = () => {
 
 const styles = {
   container: {
-    padding: "20px 20px",
+    ...ui.toolContainer,
     maxWidth: "900px",
-    margin: "0 auto",
-    backgroundColor: "#ffffff",
-    borderRadius: "12px",
-    boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
   },
   title: {
-    textAlign: 'center',
-    color: '#333',
+    ...ui.toolTitle,
     marginBottom: '30px',
   },
   inputSection: {
@@ -185,8 +179,9 @@ const styles = {
     alignItems: 'center',
     margin: '20px 0',
     padding: '15px',
-    backgroundColor: '#f5f5f5',
-    borderRadius: '8px',
+    backgroundColor: theme.colors.surfaceMuted,
+    borderRadius: theme.radius.md,
+    border: `1px solid ${theme.colors.border}`,
     boxSizing: 'border-box',
   },
   radioGroup: {
@@ -217,23 +212,19 @@ const styles = {
     marginTop: '10px',
   },
   convertButton: {
+    ...ui.buttonBase,
+    ...ui.buttonPrimary,
     padding: '10px 24px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
     borderRadius: '6px',
-    cursor: 'pointer',
     fontSize: '16px',
     transition: 'background-color 0.3s',
     fontWeight: 'bold',
   },
   clearButton: {
+    ...ui.buttonBase,
+    ...ui.buttonDanger,
     padding: '8px 16px',
-    backgroundColor: '#ff4444',
-    color: 'white',
-    border: 'none',
     borderRadius: '6px',
-    cursor: 'pointer',
     fontSize: '14px',
     transition: 'background-color 0.3s',
     '&:hover': {
@@ -241,10 +232,9 @@ const styles = {
     }
   },
   copyButton: {
+    ...ui.buttonBase,
+    ...ui.buttonSuccess,
     padding: '8px 16px',
-    backgroundColor: '#2196F3',
-    color: 'white',
-    border: 'none',
     borderRadius: '6px',
     fontSize: '14px',
     transition: 'all 0.3s',
