@@ -1,105 +1,285 @@
 import React, { useState } from "react";
 
+const YT_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
+const YT_HOSTS = new Set(["youtube.com", "www.youtube.com", "m.youtube.com"]);
+
+function normalizeYouTubeInput(input) {
+  const raw = input.trim();
+  if (!raw) {
+    return { error: "請輸入 YouTube Channel ID 或頻道網址。" };
+  }
+
+  // 直接貼 Channel ID（一般以 UC 開頭）
+  if (/^UC[\w-]{10,}$/.test(raw)) {
+    return { channelId: raw };
+  }
+
+  // 若貼的是既有 RSS 連結，直接取 channel_id
+  if (raw.includes("feeds/videos.xml")) {
+    try {
+      const url = new URL(raw);
+      const channelId = url.searchParams.get("channel_id");
+      if (channelId && /^UC[\w-]{10,}$/.test(channelId)) {
+        return { channelId };
+      }
+      return { error: "RSS 連結中找不到有效的 channel_id。" };
+    } catch (error) {
+      return { error: "RSS 連結格式不正確。" };
+    }
+  }
+
+  // 支援貼 /channel/UC... 網址
+  try {
+    const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    const url = new URL(withProtocol);
+    const hostname = url.hostname.toLowerCase();
+
+    if (!YT_HOSTS.has(hostname)) {
+      return { error: "請輸入 YouTube 的頻道網址或 Channel ID。" };
+    }
+
+    const pathSegments = url.pathname.split("/").filter(Boolean);
+    if (pathSegments[0] === "channel" && pathSegments[1]) {
+      const channelId = pathSegments[1];
+      if (/^UC[\w-]{10,}$/.test(channelId)) {
+        return { channelId };
+      }
+      return { error: "這個 /channel/ 網址中的 Channel ID 格式不正確。" };
+    }
+
+    if (url.pathname.startsWith("/@")) {
+      return {
+        error:
+          "目前無法直接由 @handle 取得 RSS，請改貼 Channel ID（UC...）或 /channel/UC... 網址。",
+      };
+    }
+
+    if (pathSegments[0] === "watch") {
+      return { error: "請貼頻道網址或 Channel ID，不是單支影片網址。" };
+    }
+
+    return { error: "無法從這個網址解析 Channel ID，請改貼 /channel/UC... 網址。" };
+  } catch (error) {
+    return { error: "輸入格式不正確，請貼 Channel ID 或完整 YouTube 頻道網址。" };
+  }
+}
+
 const YouTubeRSS = () => {
+  const [inputValue, setInputValue] = useState("");
   const [channelId, setChannelId] = useState("");
   const [rssUrl, setRssUrl] = useState(null);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
 
-  // 產生 RSS
   const generateRSS = () => {
     setError(null);
     setRssUrl(null);
+    setCopied(false);
 
-    if (!channelId.trim()) {
-      setError("請輸入正確的 YouTube Channel ID。");
+    const parsed = normalizeYouTubeInput(inputValue);
+    if (parsed.error) {
+      setError(parsed.error);
       return;
     }
-    setRssUrl(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId.trim()}`);
+
+    setChannelId(parsed.channelId);
+    setRssUrl(`${YT_FEED_BASE}${parsed.channelId}`);
+  };
+
+  const copyRssUrl = async () => {
+    if (!rssUrl) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(rssUrl);
+      setCopied(true);
+    } catch (err) {
+      console.error("複製失敗:", err);
+      window.alert("複製失敗，請手動複製。");
+    }
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#f3f4f6",
-        padding: "24px",
-        maxWidth: "480px",
-        margin: "40px auto",
-        borderRadius: "12px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h2 style={{ color: "#222", marginBottom: "16px", textAlign: "center" }}>
-        YouTube RSS 產生器
-      </h2>
-      <p style={{ marginBottom: "16px", textAlign: "center", color: "#444" }}>
-        請輸入您的 YouTube 頻道 ID（如：<strong>UCxxxxxxxxxx</strong>）
+    <div style={styles.container}>
+      <h2 style={styles.title}>YouTube RSS 產生器</h2>
+      <p style={styles.desc}>
+        支援輸入 <strong>Channel ID（UC...）</strong>、<strong>/channel/UC...</strong> 網址、
+        或已存在的 RSS 連結。
       </p>
 
-      <div style={{ marginBottom: "16px" }}>
-        <label
-          htmlFor="channelId"
-          style={{
-            display: "block",
-            marginBottom: "8px",
-            fontWeight: "bold",
-            color: "#333",
-          }}
-        >
-          頻道 ID:
+      <div style={styles.inputBlock}>
+        <label htmlFor="youtube-rss-input" style={styles.label}>
+          頻道資訊
         </label>
         <input
-          id="channelId"
+          id="youtube-rss-input"
           type="text"
-          value={channelId}
-          onChange={(e) => setChannelId(e.target.value)}
-          placeholder="如：UCxxxxxxxxxx"
-          style={{
-            width: "100%",
-            padding: "10px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            boxSizing: "border-box",
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              generateRSS();
+            }
           }}
+          placeholder="貼上 Channel ID 或 https://www.youtube.com/channel/UC..."
+          style={styles.input}
         />
+        <div style={styles.helper}>
+          目前不支援直接由 <code>@handle</code> 轉換，請改貼 Channel ID 或 /channel/ 網址。
+        </div>
       </div>
 
-      <button
-        onClick={generateRSS}
-        style={{
-          width: "100%",
-          padding: "12px",
-          borderRadius: "4px",
-          border: "none",
-          backgroundColor: "#3b82f6",
-          color: "#fff",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={generateRSS} style={styles.primaryButton}>
         取得 RSS
       </button>
 
-      {error && (
-        <p style={{ color: "red", marginTop: "16px", textAlign: "center" }}>
-          {error}
-        </p>
-      )}
+      {error && <p style={styles.error}>{error}</p>}
 
       {rssUrl && (
-        <div style={{ marginTop: "16px", textAlign: "center" }}>
-          <p style={{ marginBottom: "8px" }}>以下是您的 RSS 連結：</p>
-          <a
-            href={rssUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#2563eb", textDecoration: "underline" }}
-          >
+        <div style={styles.resultCard}>
+          <div style={styles.resultTitle}>RSS 連結</div>
+          <div style={styles.metaRow}>
+            <span style={styles.metaLabel}>Channel ID</span>
+            <code style={styles.code}>{channelId}</code>
+          </div>
+          <a href={rssUrl} target="_blank" rel="noopener noreferrer" style={styles.link}>
             {rssUrl}
           </a>
+          <div style={styles.buttonRow}>
+            <button onClick={copyRssUrl} style={styles.secondaryButton}>
+              {copied ? "已複製" : "複製連結"}
+            </button>
+            <button
+              onClick={() => window.open(rssUrl, "_blank", "noopener,noreferrer")}
+              style={styles.ghostButton}
+            >
+              開啟連結
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
+};
+
+const styles = {
+  container: {
+    backgroundColor: "#f3f4f6",
+    padding: "24px",
+    maxWidth: "640px",
+    margin: "24px auto",
+    borderRadius: "12px",
+    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+  },
+  title: {
+    color: "#222",
+    marginBottom: "12px",
+    textAlign: "center",
+  },
+  desc: {
+    marginBottom: "16px",
+    textAlign: "center",
+    color: "#444",
+    lineHeight: 1.5,
+  },
+  inputBlock: {
+    marginBottom: "12px",
+  },
+  label: {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: "bold",
+    color: "#333",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    boxSizing: "border-box",
+  },
+  helper: {
+    marginTop: "8px",
+    color: "#666",
+    fontSize: "0.9em",
+    lineHeight: 1.4,
+  },
+  primaryButton: {
+    width: "100%",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "none",
+    backgroundColor: "#3b82f6",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+  },
+  error: {
+    color: "#dc2626",
+    marginTop: "12px",
+    textAlign: "center",
+    lineHeight: 1.4,
+  },
+  resultCard: {
+    marginTop: "16px",
+    backgroundColor: "#fff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "8px",
+    padding: "12px",
+  },
+  resultTitle: {
+    fontWeight: "bold",
+    color: "#111827",
+    marginBottom: "8px",
+  },
+  metaRow: {
+    display: "flex",
+    gap: "8px",
+    alignItems: "center",
+    flexWrap: "wrap",
+    marginBottom: "8px",
+  },
+  metaLabel: {
+    color: "#6b7280",
+    fontSize: "0.9em",
+  },
+  code: {
+    backgroundColor: "#f3f4f6",
+    borderRadius: "4px",
+    padding: "2px 6px",
+    wordBreak: "break-all",
+  },
+  link: {
+    color: "#2563eb",
+    textDecoration: "underline",
+    wordBreak: "break-all",
+    display: "block",
+    lineHeight: 1.5,
+  },
+  buttonRow: {
+    marginTop: "12px",
+    display: "flex",
+    gap: "8px",
+    flexWrap: "wrap",
+  },
+  secondaryButton: {
+    backgroundColor: "#10b981",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px 12px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  ghostButton: {
+    backgroundColor: "#fff",
+    color: "#374151",
+    border: "1px solid #d1d5db",
+    borderRadius: "6px",
+    padding: "10px 12px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
 };
 
 export default YouTubeRSS;
