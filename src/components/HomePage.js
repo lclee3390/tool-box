@@ -31,6 +31,11 @@ function HomePage() {
             時鐘工具
           </Link>
         </li>
+        <li style={styles.li}>
+          <Link to="/lottery-randomizer" style={styles.a}>
+            台灣彩券隨機選號
+          </Link>
+        </li>
         
         <li style={styles.li}>
           <Link to="/yt-rss" style={styles.a}>
