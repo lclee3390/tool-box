@@ -10,6 +10,7 @@ import Clock from './components/Clock';
 import YouTubeRSS from './components/YouTubeRSS';
 import UniqueURLProcessor from './components/UniqueUrlInput';
 import TaiwanLotteryRandomizer from './components/TaiwanLotteryRandomizer';
+import UnitConverter from './components/UnitConverter';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/bk-convert" element={<BookmarkConverter />} />
           <Route path="/clock" element={<Clock />} />
           <Route path="/lottery-randomizer" element={<TaiwanLotteryRandomizer />} />
+          <Route path="/unit-converter" element={<UnitConverter />} />
           <Route path="/yt-rss" element={<YouTubeRSS />} />
           <Route path="/unique-url" element={<UniqueURLProcessor />} />
           

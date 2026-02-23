@@ -36,6 +36,11 @@ function HomePage() {
             台灣彩券隨機選號
           </Link>
         </li>
+        <li style={styles.li}>
+          <Link to="/unit-converter" style={styles.a}>
+            單位換算
+          </Link>
+        </li>
         
         <li style={styles.li}>
           <Link to="/yt-rss" style={styles.a}>
