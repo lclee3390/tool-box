@@ -3,6 +3,7 @@ import NoSleep from 'nosleep.js';
 
 const SYNC_SAMPLES = 5; // 採樣次數
 const AUTO_SYNC_INTERVAL = 30 * 60 * 1000; // 30分鐘自動同步一次
+const TAIPEI_UTC_OFFSET_HOURS = 8;
 
 // 添加 debug 模式控制
 const DEBUG_MODE = false;  // 設置為 false 來預設關閉 debug 訊息
@@ -11,7 +12,7 @@ const Clock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [serverTime, setServerTime] = useState(null);
   const [wakeLock, setWakeLock] = useState(null);
-  const [serverTimeOffset, setServerTimeOffset] = useState(0);
+  const [serverTimeOffset, setServerTimeOffset] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState(null);
   const [wakeLockError, setWakeLockError] = useState(null);
@@ -185,7 +186,7 @@ const Clock = () => {
 
   // 更新網路時間
   const updateNetworkTime = useCallback(() => {
-    if (serverTimeOffset && initialSyncDone) {
+    if (initialSyncDone && serverTimeOffset !== null) {
       // 使用本地計時更新網路時間顯示
       const now = Date.now();
       setServerTime(new Date(now + serverTimeOffset));
@@ -235,6 +236,7 @@ const Clock = () => {
       setError('無法從網路同步時間，請檢查網路連線');
       setServerTime(new Date());
       setServerTimeOffset(0);
+      setInitialSyncDone(true);
     } finally {
       setTimeout(() => {
         setIsSyncing(false);
@@ -248,13 +250,27 @@ const Clock = () => {
     const requestStartTime = Date.now();
     
     const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Taipei');
+    if (!response.ok) {
+      throw new Error(`時間 API 回應失敗: ${response.status}`);
+    }
     const data = await response.json();
     
     const t1 = performance.now();
     const requestEndTime = Date.now();
     
     const networkLatency = (t1 - t0) / 2;
-    const serverDateTime = new Date(data.dateTime);
+    // timeapi.io 的 dateTime 不含時區資訊，直接 new Date() 會依使用者本地時區解析，導致偏差。
+    // 這裡改用 API 回傳欄位組出 Asia/Taipei 的實際 UTC 時間。
+    const serverUtcTime = Date.UTC(
+      data.year,
+      data.month - 1,
+      data.day,
+      data.hour - TAIPEI_UTC_OFFSET_HOURS,
+      data.minute,
+      data.seconds,
+      data.milliSeconds || 0
+    );
+    const serverDateTime = new Date(serverUtcTime);
     const offset = serverDateTime.getTime() - (requestEndTime - networkLatency);
     
     return {
@@ -287,20 +303,17 @@ const Clock = () => {
       }
     }, AUTO_SYNC_INTERVAL);
 
-    // 使用 requestAnimationFrame 來更新顯示時間，提供更流暢的更新
-    let frameId;
-    const updateFrame = () => {
+    // 以秒級更新顯示即可，避免 requestAnimationFrame 持續重繪造成效能浪費
+    const networkTimeInterval = setInterval(() => {
       if (isActive) {
         updateNetworkTime();
-        frameId = requestAnimationFrame(updateFrame);
       }
-    };
-    frameId = requestAnimationFrame(updateFrame);
+    }, 1000);
 
     return () => {
       isActive = false;
       clearInterval(syncInterval);
-      cancelAnimationFrame(frameId);
+      clearInterval(networkTimeInterval);
     };
   }, [fetchServerTime, updateNetworkTime, initialSyncDone]);
 
