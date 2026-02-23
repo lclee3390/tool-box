@@ -18,9 +18,6 @@ const TOOL_ITEMS = [
 function HomePage() {
   return (
     <div id="home-page" style={styles.container}>
-      <div style={styles.hero}>
-        <p style={styles.subtitle}>常用小工具集中在一頁，開啟即用。</p>
-      </div>
       <ul style={styles.ul}>
         {TOOL_ITEMS.map((item) => (
           <li key={item.to} style={styles.li}>

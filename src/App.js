@@ -1,5 +1,5 @@
 // src/App.js
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
@@ -66,9 +66,20 @@ function AppLayout() {
   );
 }
 
+function ScrollToTopOnRouteChange() {
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToTopOnRouteChange />
       <AppLayout />
     </Router>
   );
