@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import NoSleep from 'nosleep.js';
 
 const SYNC_SAMPLES = 5; // 採樣次數
@@ -17,9 +17,14 @@ const Clock = () => {
   const [error, setError] = useState(null);
   const [wakeLockError, setWakeLockError] = useState(null);
   const [initialSyncDone, setInitialSyncDone] = useState(false);
-  const [noSleepVideo, setNoSleepVideo] = useState(null);
   const [debugMessages, setDebugMessages] = useState([]);
   const [noSleep] = useState(() => new NoSleep());  // 創建 NoSleep 實例
+  const wakeLockRef = useRef(null);
+  const wakeLockIntentRef = useRef(false);
+
+  useEffect(() => {
+    wakeLockRef.current = wakeLock;
+  }, [wakeLock]);
 
   // 修改 addDebugMessage 函數，只在 DEBUG_MODE 開啟時添加訊息
   const addDebugMessage = useCallback((message, error = null) => {
@@ -64,6 +69,16 @@ const Clock = () => {
     addDebugMessage('嘗試啟用螢幕常亮');
 
     try {
+      if (support.type === 'wakeLock' && !window.isSecureContext) {
+        throw new Error('Wake Lock API 需要 HTTPS 安全環境');
+      }
+
+      const currentWakeLock = wakeLockRef.current;
+      if (currentWakeLock?.type === 'wakeLock' && !currentWakeLock.lock?.released) {
+        addDebugMessage('Wake Lock 已啟用，略過重複請求');
+        return;
+      }
+
       if (support.type === 'ios') {
         addDebugMessage('使用 NoSleep 方案');
         const wakeLockMethods = await enableIOSWakeLock();
@@ -72,24 +87,33 @@ const Clock = () => {
       } else if (support.type === 'wakeLock') {
         addDebugMessage('使用 Wake Lock API');
         const lock = await navigator.wakeLock.request('screen');
+        lock.addEventListener('release', () => {
+          addDebugMessage('Wake Lock 被系統釋放');
+          setWakeLock((prev) => {
+            if (prev?.type === 'wakeLock' && prev.lock === lock) {
+              return null;
+            }
+            return prev;
+          });
+        });
         setWakeLock({ type: 'wakeLock', lock });
         addDebugMessage('Wake Lock API 啟用成功');
       }
     } catch (err) {
       addDebugMessage('啟用螢幕常亮失敗', err);
-      setWakeLockError('無法啟用螢幕常亮，請嘗試點擊螢幕');
+      setWakeLockError('無法啟用螢幕常亮（請確認 HTTPS、前景頁面，並嘗試再次點擊）');
     }
   }, [checkDeviceSupport, enableIOSWakeLock, addDebugMessage]);
 
   // 禁用螢幕常亮
-  const disableWakeLock = useCallback(() => {
+  const disableWakeLock = useCallback(async () => {
     try {
       addDebugMessage('嘗試關閉螢幕常亮');
       if (wakeLock?.type === 'ios') {
         wakeLock.cleanup();
         addDebugMessage('NoSleep 已停止');
       } else if (wakeLock?.type === 'wakeLock') {
-        wakeLock.lock.release();
+        await wakeLock.lock.release();
         addDebugMessage('Wake Lock API 已釋放');
       }
       setWakeLock(null);
@@ -99,20 +123,21 @@ const Clock = () => {
     }
   }, [wakeLock]);
 
-  // 清理函數
-  useEffect(() => {
-    return () => {
-      if (noSleepVideo) {
-        noSleepVideo.pause();
-        document.body.removeChild(noSleepVideo);
-      }
-    };
-  }, [noSleepVideo]);
-
   // 處理頁面可見性變化
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && wakeLock) {
+      if (document.visibilityState !== 'visible' || !wakeLockIntentRef.current) {
+        return;
+      }
+
+      const currentWakeLock = wakeLockRef.current;
+      if (!currentWakeLock) {
+        enableWakeLock();
+        return;
+      }
+
+      if (currentWakeLock.type === 'ios') {
+        // NoSleep 在 iPhone Safari 切到背景後可能需要再次嘗試啟用
         enableWakeLock();
       }
     };
@@ -121,7 +146,18 @@ const Clock = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [wakeLock, enableWakeLock]);
+  }, [enableWakeLock]);
+
+  const toggleWakeLock = useCallback(async () => {
+    if (wakeLockRef.current) {
+      wakeLockIntentRef.current = false;
+      await disableWakeLock();
+      return;
+    }
+
+    wakeLockIntentRef.current = true;
+    await enableWakeLock();
+  }, [enableWakeLock, disableWakeLock]);
 
   // 渲染螢幕常亮控制部分
   const renderWakeLockControl = () => (
@@ -139,7 +175,7 @@ const Clock = () => {
         )}
       </div>
       <button
-        onClick={wakeLock ? disableWakeLock : enableWakeLock}
+        onClick={toggleWakeLock}
         style={{
           ...styles.button,
           ...styles.wakeLockButton,
