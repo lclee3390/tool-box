@@ -1,13 +1,13 @@
 export const theme = {
   colors: {
-    bg: "#f4f7fb",
-    bgAccent: "#ecf4ff",
-    surface: "#ffffff",
-    surfaceMuted: "#f8fafc",
-    border: "#e2e8f0",
-    borderStrong: "#cbd5e1",
-    text: "#1f2937",
-    textMuted: "#64748b",
+    bg: "#edf1ee",
+    bgAccent: "#e6ece7",
+    surface: "#f7f8f5",
+    surfaceMuted: "#f1f4ef",
+    border: "#d9e0d8",
+    borderStrong: "#bcc7bd",
+    text: "#233126",
+    textMuted: "#627266",
     primary: "#2563eb",
     primaryHover: "#1d4ed8",
     success: "#16a34a",
@@ -24,19 +24,19 @@ export const theme = {
     pill: "999px",
   },
   shadow: {
-    card: "0 10px 30px rgba(15, 23, 42, 0.08)",
-    soft: "0 4px 12px rgba(15, 23, 42, 0.06)",
+    card: "0 10px 26px rgba(15, 23, 42, 0.055)",
+    soft: "0 4px 12px rgba(15, 23, 42, 0.045)",
   },
 };
 
 export const ui = {
   appHeader: {
     background:
-      "linear-gradient(135deg, rgba(37,99,235,0.96), rgba(14,165,233,0.92))",
+      "linear-gradient(135deg, rgba(58, 94, 150, 0.95), rgba(47, 130, 153, 0.9))",
     color: "white",
     textAlign: "center",
     padding: "14px 0",
-    boxShadow: "0 8px 20px rgba(37,99,235,0.22)",
+    boxShadow: "0 8px 18px rgba(31, 59, 103, 0.16)",
     position: "sticky",
     top: 0,
     zIndex: 10,
@@ -72,7 +72,7 @@ export const ui = {
   input: {
     border: `1px solid ${theme.colors.borderStrong}`,
     borderRadius: theme.radius.sm,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.surface,
     color: theme.colors.text,
   },
   buttonBase: {
@@ -96,7 +96,7 @@ export const ui = {
     color: "white",
   },
   buttonSecondary: {
-    backgroundColor: "#475569",
+    backgroundColor: "#5b6b62",
     color: "white",
   },
 };

@@ -112,8 +112,7 @@ const styles = {
   container: {
     ...ui.toolContainer,
     padding: '20px',
-    background:
-      'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.92) 100%)',
+    background: `linear-gradient(180deg, ${theme.colors.surface} 0%, ${theme.colors.surfaceMuted} 100%)`,
   },
   hero: {
     marginBottom: '16px',
@@ -141,7 +140,7 @@ const styles = {
   li: {
     position: 'relative',
     overflow: 'hidden',
-    background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+    background: `linear-gradient(180deg, ${theme.colors.surface} 0%, ${theme.colors.surfaceMuted} 100%)`,
     border: `1px solid ${theme.colors.border}`,
     borderRadius: theme.radius.md,
     boxShadow: theme.shadow.soft,
