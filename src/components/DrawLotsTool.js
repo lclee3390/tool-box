@@ -67,6 +67,7 @@ function drawWithRepeat(entries, count) {
 
 function DrawLotsTool() {
   const fileInputRef = useRef(null);
+  const lineNumberScrollRef = useRef(null);
   const [inputText, setInputText] = useState('');
   const [drawCount, setDrawCount] = useState('1');
   const [allowRepeat, setAllowRepeat] = useState(false);
@@ -113,6 +114,8 @@ function DrawLotsTool() {
   const entries = parsed.entries;
   const requestedCount = Number.parseInt(drawCount, 10);
   const normalizedDrawCount = Number.isFinite(requestedCount) ? Math.max(1, requestedCount) : 1;
+  const lineCount = Math.max(inputText.split('\n').length, 1);
+  const lineNumbers = Array.from({ length: lineCount }, (_, index) => index + 1);
 
   const handleDraw = () => {
     setCopied(false);
@@ -136,6 +139,11 @@ function DrawLotsTool() {
 
     setResults(winners);
     setLastDrawTime(new Date().toLocaleString());
+  };
+
+  const handleTextareaScroll = (event) => {
+    if (!lineNumberScrollRef.current) return;
+    lineNumberScrollRef.current.scrollTop = event.target.scrollTop;
   };
 
   const handleImportClick = () => {
@@ -222,13 +230,27 @@ function DrawLotsTool() {
       <label htmlFor="draw-lots-input" style={styles.label}>
         名單
       </label>
-      <textarea
-        id="draw-lots-input"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
-        placeholder={'王小明\n李小華\nA組\nB組'}
-        style={styles.textarea}
-      />
+      <div style={styles.textareaShell}>
+        <div ref={lineNumberScrollRef} style={styles.lineNumberGutter} aria-hidden="true">
+          <div style={styles.lineNumberInner}>
+            {lineNumbers.map((lineNo) => (
+              <div key={lineNo} style={styles.lineNumberText}>
+                {lineNo}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <textarea
+          id="draw-lots-input"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onScroll={handleTextareaScroll}
+          placeholder={'王小明\n李小華\nA組\nB組'}
+          wrap="off"
+          style={styles.textarea}
+        />
+      </div>
 
       <input
         ref={fileInputRef}
@@ -375,7 +397,6 @@ const styles = {
     color: theme.colors.text,
   },
   textarea: {
-    ...ui.input,
     width: '100%',
     minHeight: '220px',
     padding: '12px',
@@ -383,6 +404,39 @@ const styles = {
     resize: 'vertical',
     fontSize: '0.95rem',
     lineHeight: 1.5,
+    border: 'none',
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+    color: theme.colors.text,
+    overflowX: 'auto',
+  },
+  textareaShell: {
+    display: 'flex',
+    alignItems: 'stretch',
+    width: '100%',
+    backgroundColor: '#fff',
+    border: `1px solid ${theme.colors.borderStrong}`,
+    borderRadius: theme.radius.sm,
+    overflow: 'hidden',
+  },
+  lineNumberGutter: {
+    width: '58px',
+    flexShrink: 0,
+    borderRight: `1px solid ${theme.colors.border}`,
+    backgroundColor: theme.colors.surfaceMuted,
+    color: theme.colors.textMuted,
+    overflowY: 'hidden',
+    overflowX: 'hidden',
+  },
+  lineNumberInner: {
+    padding: '12px 8px',
+    fontSize: '0.95rem',
+    lineHeight: 1.5,
+    fontVariantNumeric: 'tabular-nums',
+  },
+  lineNumberText: {
+    textAlign: 'right',
+    userSelect: 'none',
   },
   hiddenFileInput: {
     display: 'none',
