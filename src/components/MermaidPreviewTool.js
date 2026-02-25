@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { theme, ui } from '../styles/theme';
 
 const STORAGE_KEY = 'MERMAID_PREVIEW_TOOL_DRAFT_V1';
@@ -126,9 +126,11 @@ async function loadMermaid() {
 }
 
 function MermaidDiagramCard({ block, index }) {
+  const previewContentRef = useRef(null);
   const [svg, setSvg] = useState('');
   const [renderError, setRenderError] = useState('');
   const [isRendering, setIsRendering] = useState(false);
+  const [zoomPercent, setZoomPercent] = useState(100);
 
   useEffect(() => {
     let disposed = false;
@@ -165,20 +167,79 @@ function MermaidDiagramCard({ block, index }) {
     };
   }, [block.code, index]);
 
+  useEffect(() => {
+    const container = previewContentRef.current;
+    if (!container) return;
+
+    const svgElement = container.querySelector('svg');
+    if (!svgElement) return;
+
+    svgElement.style.width = `${zoomPercent}%`;
+    svgElement.style.height = 'auto';
+    svgElement.style.maxWidth = 'none';
+    svgElement.style.display = 'block';
+  }, [svg, zoomPercent]);
+
+  const handleZoomIn = () => {
+    setZoomPercent((prev) => Math.min(400, prev + 25));
+  };
+
+  const handleZoomOut = () => {
+    setZoomPercent((prev) => Math.max(25, prev - 25));
+  };
+
+  const handleResetZoom = () => {
+    setZoomPercent(100);
+  };
+
   return (
     <article style={styles.diagramCard}>
       <div style={styles.diagramHeader}>
-        <strong>圖表 {index + 1}</strong>
-        <span style={styles.diagramMeta}>
-          {block.source === 'markdown' ? `Markdown 區塊（起始行 ${block.startLine}）` : '直接 Mermaid 輸入'}
-        </span>
+        <div style={styles.diagramHeaderText}>
+          <strong>圖表 {index + 1}</strong>
+          <span style={styles.diagramMeta}>
+            {block.source === 'markdown' ? `Markdown 區塊（起始行 ${block.startLine}）` : '直接 Mermaid 輸入'}
+          </span>
+        </div>
+
+        <div style={styles.zoomToolbar} aria-label={`圖表 ${index + 1} 縮放控制`}>
+          <button
+            type="button"
+            onClick={handleZoomOut}
+            style={{ ...styles.zoomButton, ...styles.zoomButtonGhost }}
+            title="縮小 25%"
+          >
+            −
+          </button>
+          <button
+            type="button"
+            onClick={handleZoomIn}
+            style={{ ...styles.zoomButton, ...styles.zoomButtonGhost }}
+            title="放大 25%"
+          >
+            +
+          </button>
+          <button
+            type="button"
+            onClick={handleResetZoom}
+            style={{ ...styles.zoomButton, ...styles.zoomButtonPrimary }}
+            title="重設為 100%"
+          >
+            適應寬度
+          </button>
+          <span style={styles.zoomLabel}>{zoomPercent}%</span>
+        </div>
       </div>
 
       <div style={styles.previewFrame}>
         {isRendering && <div style={styles.hintText}>Mermaid 渲染中...</div>}
         {!isRendering && renderError && <div style={styles.errorText}>{renderError}</div>}
         {!isRendering && !renderError && svg && (
-          <div style={styles.svgWrap} dangerouslySetInnerHTML={{ __html: svg }} />
+          <div
+            ref={previewContentRef}
+            style={styles.svgWrap}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
         )}
       </div>
 
@@ -438,12 +499,54 @@ const styles = {
     flexWrap: 'wrap',
     gap: '8px 12px',
     alignItems: 'center',
+    justifyContent: 'space-between',
     color: theme.colors.text,
     marginBottom: '8px',
+  },
+  diagramHeaderText: {
+    display: 'grid',
+    gap: '2px',
+    minWidth: 0,
   },
   diagramMeta: {
     color: theme.colors.textMuted,
     fontSize: '0.82rem',
+  },
+  zoomToolbar: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: '6px',
+  },
+  zoomButton: {
+    ...ui.buttonBase,
+    border: `1px solid ${theme.colors.borderStrong}`,
+    backgroundColor: '#fff',
+    color: theme.colors.text,
+    padding: '4px 8px',
+    lineHeight: 1.1,
+    minHeight: '30px',
+    minWidth: '30px',
+    fontSize: '0.85rem',
+  },
+  zoomButtonGhost: {
+    backgroundColor: '#fff',
+    color: theme.colors.text,
+  },
+  zoomButtonPrimary: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+    color: '#fff',
+    padding: '4px 10px',
+  },
+  zoomLabel: {
+    minWidth: '48px',
+    textAlign: 'right',
+    color: theme.colors.textMuted,
+    fontSize: '0.82rem',
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 700,
   },
   previewFrame: {
     border: `1px solid ${theme.colors.border}`,
@@ -451,6 +554,8 @@ const styles = {
     backgroundColor: '#fff',
     minHeight: '96px',
     padding: '8px',
+    overflow: 'auto',
+    maxHeight: '70vh',
   },
   hintText: {
     color: theme.colors.textMuted,
@@ -464,7 +569,7 @@ const styles = {
   },
   svgWrap: {
     width: '100%',
-    overflowX: 'auto',
+    minWidth: '100%',
   },
   details: {
     marginTop: '8px',
