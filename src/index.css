@@ -17,6 +17,8 @@
   --app-info: #58c9ff;
   --app-button-secondary: #465468;
   --app-focus: rgba(107, 166, 255, 0.36);
+  --app-mermaid-canvas-bg: #dbe3ec;
+  --app-mermaid-canvas-text: #243346;
   --app-shadow-card: 0 12px 28px rgba(0, 0, 0, 0.34);
   --app-shadow-soft: 0 5px 14px rgba(0, 0, 0, 0.22);
   --app-header-bg: linear-gradient(135deg, rgba(28, 42, 61, 0.95), rgba(24, 77, 94, 0.9));
@@ -46,6 +48,8 @@
   --app-info: #0ea5e9;
   --app-button-secondary: #556170;
   --app-focus: rgba(37, 99, 235, 0.28);
+  --app-mermaid-canvas-bg: #eef2f6;
+  --app-mermaid-canvas-text: #526174;
   --app-shadow-card: 0 10px 26px rgba(15, 23, 42, 0.055);
   --app-shadow-soft: 0 4px 12px rgba(15, 23, 42, 0.045);
   --app-header-bg: linear-gradient(135deg, rgba(58, 94, 150, 0.95), rgba(47, 130, 153, 0.9));

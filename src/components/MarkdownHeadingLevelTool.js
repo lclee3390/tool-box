@@ -585,12 +585,12 @@ const styles = {
   mermaidPreviewBox: {
     border: `1px solid ${theme.colors.border}`,
     borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: 'var(--app-mermaid-canvas-bg)',
     minHeight: '96px',
     padding: '8px',
   },
   mermaidHint: {
-    color: theme.colors.textMuted,
+    color: 'var(--app-mermaid-canvas-text)',
     fontSize: '0.9rem',
   },
   mermaidError: {

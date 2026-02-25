@@ -698,7 +698,7 @@ const styles = {
   previewFrame: {
     border: `1px solid ${theme.colors.border}`,
     borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: 'var(--app-mermaid-canvas-bg)',
     minHeight: '96px',
     padding: '8px',
     overflow: 'auto',
@@ -710,7 +710,7 @@ const styles = {
     touchAction: 'none',
   },
   hintText: {
-    color: theme.colors.textMuted,
+    color: 'var(--app-mermaid-canvas-text)',
     fontSize: '0.9rem',
   },
   errorText: {
@@ -722,6 +722,7 @@ const styles = {
   svgWrap: {
     width: '100%',
     minWidth: '100%',
+    borderRadius: theme.radius.sm,
   },
   interactionHint: {
     marginTop: '6px',
