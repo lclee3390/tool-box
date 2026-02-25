@@ -12,6 +12,7 @@ import UniqueURLProcessor from './components/UniqueUrlInput';
 import TaiwanLotteryRandomizer from './components/TaiwanLotteryRandomizer';
 import UnitConverter from './components/UnitConverter';
 import DrawLotsTool from './components/DrawLotsTool';
+import MarkdownHeadingLevelTool from './components/MarkdownHeadingLevelTool';
 import { theme, ui } from './styles/theme';
 
 const ROUTES = [
@@ -22,6 +23,7 @@ const ROUTES = [
   { path: '/lottery-randomizer', title: '台灣彩券隨機選號', element: <TaiwanLotteryRandomizer /> },
   { path: '/unit-converter', title: '單位換算', element: <UnitConverter /> },
   { path: '/draw-lots', title: '抽籤工具', element: <DrawLotsTool /> },
+  { path: '/markdown-heading-level', title: 'Markdown 標題層級調整', element: <MarkdownHeadingLevelTool /> },
   { path: '/yt-rss', title: 'YouTube RSS 產生器', element: <YouTubeRSS /> },
   { path: '/unique-url', title: '去除重複 URL', element: <UniqueURLProcessor /> },
   { path: '/zh', title: '簡繁轉換', element: <ZhConvertTool /> },
