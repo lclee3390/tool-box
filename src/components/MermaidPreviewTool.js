@@ -259,7 +259,6 @@ function MermaidPreviewTool() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Mermaid 預覽</h2>
       <p style={styles.subtitle}>
         可直接貼 Mermaid 語法，或貼含 ` ```mermaid ` fenced block 的 Markdown（會自動抓出預覽）
       </p>

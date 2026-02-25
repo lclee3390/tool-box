@@ -317,7 +317,6 @@ function MarkdownHeadingLevelTool() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Markdown 標題層級調整</h2>
       <p style={styles.subtitle}>
         將整份 Markdown 的 `#` 標題整體升一級或降一級（會略過 fenced code block）
       </p>
