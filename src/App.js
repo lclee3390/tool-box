@@ -17,15 +17,15 @@ import { theme, ui } from './styles/theme';
 const ROUTES = [
   { path: '/', title: '工具箱', element: <HomePage /> },
   { path: '/coin-flip', title: '擲硬幣', element: <CoinFlip /> },
-  { path: '/cp', title: 'CP值計算機', element: <CpValueCalculator /> },
-  { path: '/zh', title: '簡繁轉換', element: <ZhConvertTool /> },
-  { path: '/bk-convert', title: '網址轉書籤工具', element: <BookmarkConverter /> },
+  { path: '/cp', title: 'CP 值計算機', element: <CpValueCalculator /> },
   { path: '/clock', title: '時鐘工具', element: <Clock /> },
   { path: '/lottery-randomizer', title: '台灣彩券隨機選號', element: <TaiwanLotteryRandomizer /> },
   { path: '/unit-converter', title: '單位換算', element: <UnitConverter /> },
   { path: '/draw-lots', title: '抽籤工具', element: <DrawLotsTool /> },
   { path: '/yt-rss', title: 'YouTube RSS 產生器', element: <YouTubeRSS /> },
   { path: '/unique-url', title: '去除重複 URL', element: <UniqueURLProcessor /> },
+  { path: '/zh', title: '簡繁轉換', element: <ZhConvertTool /> },
+  { path: '/bk-convert', title: '網址轉書籤工具', element: <BookmarkConverter /> },
 ];
 
 const ROUTE_TITLE_MAP = Object.fromEntries(ROUTES.map(({ path, title }) => [path, title]));
