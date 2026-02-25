@@ -11,7 +11,7 @@ const TOOL_ITEMS = [
   { to: '/unit-converter', label: '單位換算', desc: '常用單位快速互相換算', accent: '#f59e0b' },
   { to: '/draw-lots', label: '抽籤工具', desc: '名單抽選，支援編號與匯入匯出', accent: '#f97316' },
   { to: '/markdown-heading-level', label: 'Markdown 標題層級調整', desc: '整份文件標題整體升降一級', accent: '#6366f1' },
-  { to: '/mermaid-preview', label: 'Mermaid 預覽', desc: 'Mermaid 圖表即時預覽（含 Markdown 區塊偵測）', accent: '#06b6d4' },
+  { to: '/mermaid-preview', label: 'Mermaid 預覽', desc: 'Mermaid 圖表即時預覽', accent: '#06b6d4' },
   { to: '/yt-rss', label: 'YouTube RSS', desc: '從頻道網址產生 RSS 連結', accent: '#ef4444' },
   { to: '/unique-url', label: '去除重複URL', desc: '清理重複連結並輸出結果', accent: '#8b5cf6' },
   { to: '/zh', label: '簡繁轉換', desc: '簡體與繁體文字互轉', accent: '#0891b2' },

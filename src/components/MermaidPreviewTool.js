@@ -126,11 +126,15 @@ async function loadMermaid() {
 }
 
 function MermaidDiagramCard({ block, index }) {
+  const previewFrameRef = useRef(null);
   const previewContentRef = useRef(null);
   const [svg, setSvg] = useState('');
   const [renderError, setRenderError] = useState('');
   const [isRendering, setIsRendering] = useState(false);
   const [zoomPercent, setZoomPercent] = useState(100);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStateRef = useRef(null);
+  const pendingWheelZoomRef = useRef(null);
 
   useEffect(() => {
     let disposed = false;
@@ -168,6 +172,13 @@ function MermaidDiagramCard({ block, index }) {
   }, [block.code, index]);
 
   useEffect(() => {
+    setZoomPercent(100);
+    setIsDragging(false);
+    dragStateRef.current = null;
+    pendingWheelZoomRef.current = null;
+  }, [block.code]);
+
+  useEffect(() => {
     const container = previewContentRef.current;
     if (!container) return;
 
@@ -178,7 +189,27 @@ function MermaidDiagramCard({ block, index }) {
     svgElement.style.height = 'auto';
     svgElement.style.maxWidth = 'none';
     svgElement.style.display = 'block';
+
+    const pendingWheelZoom = pendingWheelZoomRef.current;
+    const frame = previewFrameRef.current;
+    if (pendingWheelZoom && frame) {
+      const { ratio, localX, localY, prevScrollLeft, prevScrollTop } = pendingWheelZoom;
+      pendingWheelZoomRef.current = null;
+
+      window.requestAnimationFrame(() => {
+        frame.scrollLeft = (prevScrollLeft + localX) * ratio - localX;
+        frame.scrollTop = (prevScrollTop + localY) * ratio - localY;
+      });
+    }
   }, [svg, zoomPercent]);
+
+  useEffect(() => {
+    return () => {
+      setIsDragging(false);
+      dragStateRef.current = null;
+      pendingWheelZoomRef.current = null;
+    };
+  }, []);
 
   const handleZoomIn = () => {
     setZoomPercent((prev) => Math.min(400, prev + 25));
@@ -191,6 +222,107 @@ function MermaidDiagramCard({ block, index }) {
   const handleResetZoom = () => {
     setZoomPercent(100);
   };
+
+  const handlePointerDown = (event) => {
+    if (event.button !== 0) return;
+
+    const frame = previewFrameRef.current;
+    if (!frame) return;
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      scrollLeft: frame.scrollLeft,
+      scrollTop: frame.scrollTop,
+    };
+
+    setIsDragging(true);
+
+    if (frame.setPointerCapture) {
+      try {
+        frame.setPointerCapture(event.pointerId);
+      } catch (e) {
+        // Ignore pointer capture failures.
+      }
+    }
+
+    event.preventDefault();
+  };
+
+  const handlePointerMove = (event) => {
+    const frame = previewFrameRef.current;
+    const dragState = dragStateRef.current;
+    if (!frame || !dragState) return;
+
+    if (dragState.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - dragState.clientX;
+    const deltaY = event.clientY - dragState.clientY;
+
+    frame.scrollLeft = dragState.scrollLeft - deltaX;
+    frame.scrollTop = dragState.scrollTop - deltaY;
+    event.preventDefault();
+  };
+
+  const endDrag = (event) => {
+    const frame = previewFrameRef.current;
+    const dragState = dragStateRef.current;
+    if (!dragState) return;
+    if (event && dragState.pointerId !== event.pointerId) return;
+
+    dragStateRef.current = null;
+    setIsDragging(false);
+
+    if (frame && event && frame.releasePointerCapture) {
+      try {
+        frame.releasePointerCapture(event.pointerId);
+      } catch (e) {
+        // Ignore pointer capture release failures.
+      }
+    }
+  };
+
+  const canInteract = Boolean(svg) && !isRendering && !renderError;
+
+  useEffect(() => {
+    const frame = previewFrameRef.current;
+    if (!frame || !canInteract) return undefined;
+
+    const onWheel = (event) => {
+      // Prevent the page from scrolling while zooming on the diagram.
+      event.preventDefault();
+      event.stopPropagation();
+
+      const step = event.shiftKey ? 25 : 10;
+      const direction = event.deltaY < 0 ? 1 : -1;
+      const nextZoom = Math.max(25, Math.min(400, zoomPercent + direction * step));
+
+      if (nextZoom === zoomPercent) {
+        return;
+      }
+
+      const rect = frame.getBoundingClientRect();
+      const localX = event.clientX - rect.left;
+      const localY = event.clientY - rect.top;
+      const ratio = nextZoom / zoomPercent;
+
+      pendingWheelZoomRef.current = {
+        ratio,
+        localX,
+        localY,
+        prevScrollLeft: frame.scrollLeft,
+        prevScrollTop: frame.scrollTop,
+      };
+
+      setZoomPercent(nextZoom);
+    };
+
+    frame.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      frame.removeEventListener('wheel', onWheel);
+    };
+  }, [canInteract, zoomPercent]);
 
   return (
     <article style={styles.diagramCard}>
@@ -231,7 +363,18 @@ function MermaidDiagramCard({ block, index }) {
         </div>
       </div>
 
-      <div style={styles.previewFrame}>
+      <div
+        ref={previewFrameRef}
+        style={{
+          ...styles.previewFrame,
+          ...(canInteract ? styles.previewFrameInteractive : null),
+          cursor: canInteract ? (isDragging ? 'grabbing' : 'grab') : 'default',
+        }}
+        onPointerDown={canInteract ? handlePointerDown : undefined}
+        onPointerMove={canInteract ? handlePointerMove : undefined}
+        onPointerUp={canInteract ? endDrag : undefined}
+        onPointerCancel={canInteract ? endDrag : undefined}
+      >
         {isRendering && <div style={styles.hintText}>Mermaid 渲染中...</div>}
         {!isRendering && renderError && <div style={styles.errorText}>{renderError}</div>}
         {!isRendering && !renderError && svg && (
@@ -241,6 +384,10 @@ function MermaidDiagramCard({ block, index }) {
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         )}
+      </div>
+
+      <div style={styles.interactionHint}>
+        拖曳可平移，滾輪可縮放（`Shift + 滾輪` 每次 25%）
       </div>
 
       <details style={styles.details}>
@@ -556,6 +703,11 @@ const styles = {
     padding: '8px',
     overflow: 'auto',
     maxHeight: '70vh',
+    overscrollBehavior: 'contain',
+  },
+  previewFrameInteractive: {
+    userSelect: 'none',
+    touchAction: 'none',
   },
   hintText: {
     color: theme.colors.textMuted,
@@ -570,6 +722,11 @@ const styles = {
   svgWrap: {
     width: '100%',
     minWidth: '100%',
+  },
+  interactionHint: {
+    marginTop: '6px',
+    color: theme.colors.textMuted,
+    fontSize: '0.78rem',
   },
   details: {
     marginTop: '8px',
