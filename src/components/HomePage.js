@@ -11,6 +11,7 @@ const TOOL_ITEMS = [
   { to: '/clock', label: '時鐘工具' },
   { to: '/lottery-randomizer', label: '台灣彩券隨機選號' },
   { to: '/unit-converter', label: '單位換算' },
+  { to: '/draw-lots', label: '抽籤工具' },
   { to: '/yt-rss', label: 'YouTube RSS' },
   { to: '/unique-url', label: '去除重複URL' },
 ];
