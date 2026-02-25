@@ -176,7 +176,7 @@ const styles = {
   desc: {
     marginBottom: "16px",
     textAlign: "center",
-    color: "#444",
+    color: theme.colors.textMuted,
     lineHeight: 1.5,
   },
   inputBlock: {
@@ -186,18 +186,20 @@ const styles = {
     display: "block",
     marginBottom: "8px",
     fontWeight: "bold",
-    color: "#333",
+    color: theme.colors.text,
   },
   input: {
     width: "100%",
     padding: "10px",
     borderRadius: "6px",
-    border: "1px solid #ccc",
+    border: `1px solid ${theme.colors.borderStrong}`,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
     boxSizing: "border-box",
   },
   helper: {
     marginTop: "8px",
-    color: "#666",
+    color: theme.colors.textMuted,
     fontSize: "0.9em",
     lineHeight: 1.4,
   },
@@ -210,21 +212,21 @@ const styles = {
     fontWeight: "bold",
   },
   error: {
-    color: "#dc2626",
+    color: theme.colors.danger,
     marginTop: "12px",
     textAlign: "center",
     lineHeight: 1.4,
   },
   resultCard: {
     marginTop: "16px",
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.surface,
     border: `1px solid ${theme.colors.border}`,
     borderRadius: theme.radius.md,
     padding: "12px",
   },
   resultTitle: {
     fontWeight: "bold",
-    color: "#111827",
+    color: theme.colors.text,
     marginBottom: "8px",
   },
   metaRow: {
@@ -235,17 +237,18 @@ const styles = {
     marginBottom: "8px",
   },
   metaLabel: {
-    color: "#6b7280",
+    color: theme.colors.textMuted,
     fontSize: "0.9em",
   },
   code: {
-    backgroundColor: "#f3f4f6",
+    backgroundColor: theme.colors.surfaceMuted,
+    color: theme.colors.text,
     borderRadius: "4px",
     padding: "2px 6px",
     wordBreak: "break-all",
   },
   link: {
-    color: "#2563eb",
+    color: theme.colors.primary,
     textDecoration: "underline",
     wordBreak: "break-all",
     display: "block",
@@ -265,7 +268,7 @@ const styles = {
     fontWeight: "bold",
   },
   ghostButton: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.surface,
     color: theme.colors.text,
     border: `1px solid ${theme.colors.borderStrong}`,
     borderRadius: "6px",

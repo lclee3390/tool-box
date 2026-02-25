@@ -1,21 +1,21 @@
 export const theme = {
   colors: {
-    bg: "#edf1ee",
-    bgAccent: "#e6ece7",
-    surface: "#f7f8f5",
-    surfaceMuted: "#f1f4ef",
-    border: "#d9e0d8",
-    borderStrong: "#bcc7bd",
-    text: "#233126",
-    textMuted: "#627266",
-    primary: "#2563eb",
-    primaryHover: "#1d4ed8",
-    success: "#16a34a",
-    successHover: "#15803d",
-    danger: "#dc2626",
-    dangerHover: "#b91c1c",
-    warning: "#d97706",
-    info: "#0ea5e9",
+    bg: "var(--app-bg)",
+    bgAccent: "var(--app-bg-accent)",
+    surface: "var(--app-surface)",
+    surfaceMuted: "var(--app-surface-muted)",
+    border: "var(--app-border)",
+    borderStrong: "var(--app-border-strong)",
+    text: "var(--app-text)",
+    textMuted: "var(--app-text-muted)",
+    primary: "var(--app-primary)",
+    primaryHover: "var(--app-primary-strong)",
+    success: "var(--app-success)",
+    successHover: "var(--app-success-strong)",
+    danger: "var(--app-danger)",
+    dangerHover: "var(--app-danger-strong)",
+    warning: "var(--app-warning)",
+    info: "var(--app-info)",
   },
   radius: {
     sm: "8px",
@@ -24,19 +24,18 @@ export const theme = {
     pill: "999px",
   },
   shadow: {
-    card: "0 10px 26px rgba(15, 23, 42, 0.055)",
-    soft: "0 4px 12px rgba(15, 23, 42, 0.045)",
+    card: "var(--app-shadow-card)",
+    soft: "var(--app-shadow-soft)",
   },
 };
 
 export const ui = {
   appHeader: {
-    background:
-      "linear-gradient(135deg, rgba(58, 94, 150, 0.95), rgba(47, 130, 153, 0.9))",
+    background: "var(--app-header-bg)",
     color: "white",
     textAlign: "center",
     padding: "14px 0",
-    boxShadow: "0 8px 18px rgba(31, 59, 103, 0.16)",
+    boxShadow: "var(--app-header-shadow)",
     position: "sticky",
     top: 0,
     zIndex: 10,
@@ -96,7 +95,7 @@ export const ui = {
     color: "white",
   },
   buttonSecondary: {
-    backgroundColor: "#5b6b62",
+    backgroundColor: "var(--app-button-secondary)",
     color: "white",
   },
 };

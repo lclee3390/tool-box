@@ -2,6 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      (function () {
+        var key = 'TOOLBOX_THEME_MODE_V1';
+        var mode = 'dark';
+        try {
+          var saved = window.localStorage.getItem(key);
+          if (saved === 'dark' || saved === 'light') {
+            mode = saved;
+          }
+        } catch (e) {}
+        document.documentElement.dataset.theme = mode;
+        document.documentElement.style.colorScheme = mode;
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg?v=20260226-1" />
     <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico?v=20260226-1" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico?v=20260226-1" />

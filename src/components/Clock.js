@@ -165,7 +165,7 @@ const Clock = () => {
     <div style={styles.wakeLockContainer}>
       <div style={styles.wakeLockStatus}>
         <div style={styles.wakeLockStatusText}>
-          螢幕常亮：<span style={{ color: wakeLock ? '#2ecc71' : '#e74c3c' }}>
+          螢幕常亮：<span style={{ color: wakeLock ? theme.colors.success : theme.colors.danger }}>
             {wakeLock ? '開啟' : '關閉'}
           </span>
         </div>
@@ -180,7 +180,7 @@ const Clock = () => {
         style={{
           ...styles.button,
           ...styles.wakeLockButton,
-          backgroundColor: wakeLock ? '#e74c3c' : '#2ecc71'
+          backgroundColor: wakeLock ? theme.colors.danger : theme.colors.success
         }}
       >
         {wakeLock ? '關閉螢幕常亮' : '開啟螢幕常亮'}
@@ -417,13 +417,13 @@ const styles = {
   },
   timeLabel: {
     fontSize: '16px',
-    color: '#666',
+    color: theme.colors.textMuted,
     marginBottom: '5px',
   },
   time: {
     fontSize: '36px',
     fontWeight: 'bold',
-    color: '#2c3e50',
+    color: theme.colors.text,
     fontFamily: 'monospace',
   },
   wakeLockContainer: {
@@ -440,7 +440,7 @@ const styles = {
   wakeLockStatus: {
     fontSize: '16px',
     fontWeight: '500',
-    color: '#2c3e50',
+    color: theme.colors.text,
     textAlign: 'center',
   },
   button: {
@@ -463,7 +463,7 @@ const styles = {
     },
   },
   error: {
-    color: '#e74c3c',
+    color: theme.colors.danger,
     fontSize: '14px',
     marginTop: '5px',
   },
@@ -473,17 +473,18 @@ const styles = {
     opacity: 0.7,
   },
   warning: {
-    color: '#f39c12',  // 使用警告色而不是錯誤色
+    color: theme.colors.warning,  // 使用警告色而不是錯誤色
     fontSize: '14px',
     marginTop: '5px',
   },
   wakeLockError: {
     fontSize: '14px',
-    color: '#e74c3c',
+    color: theme.colors.danger,
     marginTop: '8px',
     textAlign: 'center',
     padding: '4px 8px',
-    backgroundColor: '#fde8e8',
+    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    border: '1px solid rgba(239, 68, 68, 0.28)',
     borderRadius: '4px',
   },
   wakeLockButton: {
@@ -522,21 +523,21 @@ const styles = {
   debugTitle: {
     fontSize: '14px',
     fontWeight: '500',
-    color: '#666',
+    color: theme.colors.textMuted,
     marginBottom: '5px',
   },
   debugMessage: {
     fontSize: '12px',
     fontFamily: 'monospace',
-    color: '#333',
+    color: theme.colors.text,
     padding: '4px',
-    borderBottom: '1px solid #eee',
+    borderBottom: `1px solid ${theme.colors.border}`,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-all',
   },
   wakeLockDescription: {
     fontSize: '14px',
-    color: '#666',
+    color: theme.colors.textMuted,
     marginTop: '5px',
     textAlign: 'center',
   },

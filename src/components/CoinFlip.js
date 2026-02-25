@@ -98,7 +98,7 @@ const styles = {
   },
   coinResult: {
     marginTop: '20px',
-    color: '#555',
+    color: theme.colors.textMuted,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -106,17 +106,17 @@ const styles = {
   resultText: {
     fontSize: '2em',
     fontWeight: 'bold',
-    color: '#333',
+    color: theme.colors.text,
   },
   timestamp: {
     fontSize: '0.9em',
-    color: '#888',
+    color: theme.colors.textMuted,
     marginTop: '5px',
   },
   count: {
     marginTop: '20px',
     fontSize: '1.2em',
-    color: '#333',
+    color: theme.colors.text,
     textAlign: 'center',
   },
   history: {
@@ -125,7 +125,7 @@ const styles = {
   },
   historyTitle: {
     fontSize: '1.5em',
-    color: '#666',
+    color: theme.colors.textMuted,
     marginBottom: '10px',
   },
   historyList: {
@@ -136,12 +136,13 @@ const styles = {
     margin: '0',
     border: `1px solid ${theme.colors.border}`,
     borderRadius: '5px',
+    backgroundColor: theme.colors.surfaceMuted,
   },
   historyItem: {
     fontSize: '1em',
-    color: '#333',
+    color: theme.colors.text,
     padding: '10px',
-    borderBottom: '1px solid #eee',
+    borderBottom: `1px solid ${theme.colors.border}`,
   },
   clearButton: {
     ...ui.buttonBase,

@@ -77,8 +77,16 @@ export default function UniqueURLProcessor() {
       </button>
 
       {duplicates.length > 0 && (
-        <div style={{ backgroundColor: '#fff5f5', border: `1px solid ${theme.colors.border}`, padding: '15px', marginTop: '20px', borderRadius: '8px' }}>
-          <h3 style={{ color: '#cc0000' }}>重複的 URL：</h3>
+        <div
+          style={{
+            backgroundColor: 'rgba(220, 38, 38, 0.08)',
+            border: `1px solid rgba(220, 38, 38, 0.2)`,
+            padding: '15px',
+            marginTop: '20px',
+            borderRadius: '8px',
+          }}
+        >
+          <h3 style={{ color: theme.colors.danger }}>重複的 URL：</h3>
           <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
             {duplicates.map((url, index) => `${index + 1}. ${url}`).join('\n')}
           </pre>
@@ -86,8 +94,16 @@ export default function UniqueURLProcessor() {
       )}
 
       {uniqueURLs.length > 0 && (
-        <div style={{ backgroundColor: '#f0fdf4', border: `1px solid ${theme.colors.border}`, padding: '15px', marginTop: '20px', borderRadius: '8px' }}>
-          <h3 style={{ color: '#009933' }}>唯一的 URL 列表：</h3>
+        <div
+          style={{
+            backgroundColor: 'rgba(22, 163, 74, 0.08)',
+            border: `1px solid rgba(22, 163, 74, 0.2)`,
+            padding: '15px',
+            marginTop: '20px',
+            borderRadius: '8px',
+          }}
+        >
+          <h3 style={{ color: theme.colors.success }}>唯一的 URL 列表：</h3>
           <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
             {uniqueURLs.map((url, index) => `${index + 1}. ${url}`).join('\n')}
           </pre>

@@ -611,7 +611,7 @@ const styles = {
     marginTop: '12px',
     borderRadius: theme.radius.lg,
     border: `1px solid ${theme.colors.border}`,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: '12px',
     boxShadow: theme.shadow.soft,
   },
@@ -669,7 +669,7 @@ const styles = {
   zoomButton: {
     ...ui.buttonBase,
     border: `1px solid ${theme.colors.borderStrong}`,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     color: theme.colors.text,
     padding: '4px 8px',
     lineHeight: 1.1,
@@ -678,7 +678,7 @@ const styles = {
     fontSize: '0.85rem',
   },
   zoomButtonGhost: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     color: theme.colors.text,
   },
   zoomButtonPrimary: {
@@ -698,7 +698,7 @@ const styles = {
   previewFrame: {
     border: `1px solid ${theme.colors.border}`,
     borderRadius: theme.radius.md,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     minHeight: '96px',
     padding: '8px',
     overflow: 'auto',
@@ -742,7 +742,7 @@ const styles = {
     padding: '10px',
     borderRadius: theme.radius.md,
     border: `1px solid ${theme.colors.border}`,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     color: theme.colors.text,
     fontSize: '0.82rem',
     lineHeight: 1.45,

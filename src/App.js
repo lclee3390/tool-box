@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import CoinFlip from './components/CoinFlip';
@@ -15,6 +15,8 @@ import DrawLotsTool from './components/DrawLotsTool';
 import MarkdownHeadingLevelTool from './components/MarkdownHeadingLevelTool';
 import MermaidPreviewTool from './components/MermaidPreviewTool';
 import { theme, ui } from './styles/theme';
+
+const THEME_MODE_STORAGE_KEY = 'TOOLBOX_THEME_MODE_V1';
 
 const ROUTES = [
   { path: '/', title: '工具箱', element: <HomePage /> },
@@ -34,10 +36,42 @@ const ROUTES = [
 
 const ROUTE_TITLE_MAP = Object.fromEntries(ROUTES.map(({ path, title }) => [path, title]));
 
+function getInitialThemeMode() {
+  if (typeof window === 'undefined') return 'dark';
+
+  try {
+    const saved = window.localStorage.getItem(THEME_MODE_STORAGE_KEY);
+    if (saved === 'dark' || saved === 'light') {
+      return saved;
+    }
+  } catch (e) {
+    // Ignore storage access errors.
+  }
+
+  return 'dark';
+}
+
 function AppLayout() {
   const location = useLocation();
+  const [themeMode, setThemeMode] = useState(getInitialThemeMode);
   const pageTitle = ROUTE_TITLE_MAP[location.pathname] || '工具箱';
   const isHome = location.pathname === '/';
+
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.dataset.theme = themeMode;
+    root.style.colorScheme = themeMode;
+
+    try {
+      window.localStorage.setItem(THEME_MODE_STORAGE_KEY, themeMode);
+    } catch (e) {
+      // Ignore storage access errors.
+    }
+  }, [themeMode]);
+
+  const toggleThemeMode = () => {
+    setThemeMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
     <>
@@ -52,10 +86,19 @@ function AppLayout() {
               )}
             </div>
             <h1 style={styles.headerTitle}>{pageTitle}</h1>
-            <div style={styles.headerSide} aria-hidden="true">
-              {!isHome && (
-                <span style={{ ...styles.homeLink, ...styles.headerGhost }}>回到首頁</span>
-              )}
+            <div style={{ ...styles.headerSide, ...styles.headerSideRight }}>
+              <button
+                type="button"
+                onClick={toggleThemeMode}
+                style={styles.themeToggleButton}
+                aria-label={`切換為${themeMode === 'dark' ? '淺色模式' : '黑色模式'}`}
+                title={themeMode === 'dark' ? '切換為淺色模式' : '切換為黑色模式'}
+              >
+                <span style={styles.themeToggleIcon}>{themeMode === 'dark' ? '深' : '淺'}</span>
+                <span style={styles.themeToggleText}>
+                  {themeMode === 'dark' ? '黑色模式' : '淺色模式'}
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -106,13 +149,17 @@ const styles = {
   headerRow: {
     minHeight: '36px',
     display: 'grid',
-    gridTemplateColumns: 'max-content 1fr max-content',
+    gridTemplateColumns: '1fr auto 1fr',
     alignItems: 'center',
     gap: '12px',
   },
   headerSide: {
     display: 'flex',
     alignItems: 'center',
+    minWidth: 0,
+  },
+  headerSideRight: {
+    justifyContent: 'flex-end',
   },
   headerTitle: {
     margin: 0,
@@ -121,10 +168,6 @@ const styles = {
     letterSpacing: '0.02em',
     lineHeight: 1.2,
     textAlign: 'center',
-  },
-  headerGhost: {
-    visibility: 'hidden',
-    pointerEvents: 'none',
   },
   headerBadge: {
     fontSize: '0.75rem',
@@ -147,6 +190,36 @@ const styles = {
     display: 'inline-block',
     whiteSpace: 'nowrap',
     fontSize: '0.9rem',
+  },
+  themeToggleButton: {
+    border: '1px solid rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    color: 'white',
+    borderRadius: theme.radius.pill,
+    padding: '6px 12px',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    whiteSpace: 'nowrap',
+    fontSize: '0.88rem',
+    fontWeight: 700,
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+  },
+  themeToggleIcon: {
+    lineHeight: 1,
+    fontSize: '0.78rem',
+    width: '18px',
+    height: '18px',
+    borderRadius: theme.radius.pill,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    border: '1px solid rgba(255,255,255,0.18)',
+  },
+  themeToggleText: {
+    lineHeight: 1.1,
   },
 };
 

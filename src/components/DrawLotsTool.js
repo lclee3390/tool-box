@@ -414,7 +414,7 @@ const styles = {
     display: 'flex',
     alignItems: 'stretch',
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     border: `1px solid ${theme.colors.borderStrong}`,
     borderRadius: theme.radius.sm,
     overflow: 'hidden',
@@ -484,7 +484,7 @@ const styles = {
     marginTop: '16px',
     borderRadius: theme.radius.lg,
     border: `1px solid ${theme.colors.border}`,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: '12px',
   },
   parsedHeader: {
@@ -610,7 +610,7 @@ const styles = {
     padding: '10px 12px',
     borderRadius: theme.radius.md,
     border: `1px solid ${theme.colors.border}`,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
   },
   resultTextWrap: {
     display: 'flex',
