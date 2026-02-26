@@ -85,13 +85,19 @@ function CpValueCalculator({ showPage }) {
   const [highlightedItems, setHighlightedItems] = useState([]);
   const [errors, setErrors] = useState({});
   const importFileInputRef = useRef(null);
+  const initialAutoAddCheckedRef = useRef(false);
 
   useEffect(() => {
+    if (initialAutoAddCheckedRef.current) {
+      return;
+    }
+
+    initialAutoAddCheckedRef.current = true;
     if (!hasDraftOnLoadRef.current && items.length === 1) {
       // 確保只在初次載入時添加
       addItem();
     }
-  }, []);
+  }, [addItem, items.length]);
 
   useEffect(() => {
     try {
@@ -109,7 +115,7 @@ function CpValueCalculator({ showPage }) {
     }
   }, [items, nextId]);
 
-  const addItem = () => {
+  function addItem() {
     setItems([
       ...items,
       {
@@ -121,7 +127,7 @@ function CpValueCalculator({ showPage }) {
       },
     ]);
     setNextId(nextId + 1); // 更新下一個ID
-  };
+  }
 
   const handleInputChange = (id, field, value) => {
     setItems(

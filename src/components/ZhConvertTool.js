@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import chineseConv from 'chinese-conv';
+import { sify, tify } from 'chinese-conv/dist';
 import { theme, ui } from '../styles/theme';
 
 const ZhConvertTool = () => {
@@ -18,9 +18,9 @@ const ZhConvertTool = () => {
 
   const handleConvert = () => {
     if (mode === 'simplified') {
-      setOutputText(chineseConv.tify(inputText));
+      setOutputText(tify(inputText));
     } else {
-      setOutputText(chineseConv.sify(inputText));
+      setOutputText(sify(inputText));
     }
   };
 

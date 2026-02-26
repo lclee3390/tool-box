@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
+
+jest.mock('chinese-conv/dist', () => ({
+  __esModule: true,
+  tify: (value) => value,
+  sify: (value) => value,
+}));
+
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders home tool list', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /擲硬幣/i })).toBeInTheDocument();
 });

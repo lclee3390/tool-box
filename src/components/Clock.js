@@ -122,7 +122,7 @@ const Clock = () => {
     } catch (err) {
       addDebugMessage('關閉螢幕常亮時發生錯誤', err);
     }
-  }, [wakeLock]);
+  }, [wakeLock, addDebugMessage]);
 
   // 處理頁面可見性變化
   useEffect(() => {
@@ -284,7 +284,6 @@ const Clock = () => {
   // 添加新的採樣函數
   const fetchTimeSample = async () => {
     const t0 = performance.now();
-    const requestStartTime = Date.now();
     
     const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Taipei');
     if (!response.ok) {
